@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Staffing OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04243b; --panel:rgba(255,255,255,.055); --ink:#e9f6ff; --t2:#a8c8da; --t3:#6e93a8; --t4:#50708a;
+  --line:rgba(160,220,255,.13); --line2:rgba(160,220,255,.24);
+  --brand:#34e3d2; --brand-soft:rgba(52,227,210,.15); --brand-dk:#19c2b4;
+  --ind:#5cc8ff; --blue:#5cc8ff; --green:#34e3d2; --green-bg:rgba(52,227,210,.15); --amber:#ffcf6b; --amber-bg:rgba(255,207,107,.14); --red:#ff7d8c; --red-bg:rgba(255,125,140,.14);
+  --rail:#031b2e; --rail2:#0a2238;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --sh:0 24px 56px -28px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--rail);color:var(--ink);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased}
+.app{display:flex;height:100vh;min-height:600px;overflow:hidden}
+.mono{font-family:var(--mono)}
+::selection{background:var(--brand);color:#fff}
+
+/* sidebar */
+.side{width:236px;background:var(--rail);flex:0 0 auto;display:flex;flex-direction:column;padding:16px 12px;border-right:1px solid #000}
+.logo{display:flex;align-items:center;gap:10px;padding:6px 8px 18px}
+.logo .wm{font-weight:800;font-size:22px;letter-spacing:-.04em;color:#fff}
+.logo .wm .g{color:var(--brand)}
+.logo .env{font-family:var(--mono);font-size:9px;color:#6b7080;margin-top:1px}
+.navg{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:#5a5f70;padding:14px 10px 6px}
+.nav{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;color:#aeb3c4;font-size:13.5px;font-weight:500;cursor:pointer;border:0;background:none;width:100%;text-align:left;font-family:var(--sans);position:relative}
+.nav .i{width:17px;height:17px;flex:0 0 auto;opacity:.9}
+.nav:hover{background:#1c1d2b;color:#fff}
+.nav.on{background:#23131f;color:#fff}
+.nav.on::before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--brand)}
+.nav.on .i{color:var(--brand)}
+.nav .ct{margin-left:auto;font-family:var(--mono);font-size:10px;background:#23242f;color:#aeb3c4;border-radius:6px;padding:1px 7px}
+.side .sp{flex:1}
+.side .foot{border-top:1px solid #23242f;padding-top:10px}
+.side .foot a{color:#6b7080;font-family:var(--mono);font-size:11px;text-decoration:none;display:block;padding:6px 10px}
+.side .foot a:hover{color:#fff}
+
+/* main */
+.main{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--bg)}
+.top{height:60px;background:var(--panel);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 24px;flex:0 0 auto}
+.top h1{font-size:18px;font-weight:700;letter-spacing:-.02em;margin:0}
+.top .sub{font-size:12px;color:var(--t3)}
+.search{margin-left:18px;flex:1;max-width:380px;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line2);border-radius:9px;padding:8px 12px;color:var(--t3);font-size:13px}
+.chip{font-family:var(--mono);font-size:11px;border:1px solid var(--line2);border-radius:8px;padding:6px 11px;color:var(--t2);display:flex;align-items:center;gap:7px;cursor:pointer;background:var(--panel)}
+.chip .d{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.chip.teams{color:var(--ind);border-color:#d9dbf3;background:#f1f1fb}
+.av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--ind));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.view{flex:1;overflow-y:auto;padding:24px}
+.fade{animation:f .3s ease}@keyframes f{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* generic */
+.grid{display:grid;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh)}
+.card .h{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.card .h h3{font-size:14px;font-weight:700;margin:0}
+.card .h .more{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--brand);cursor:pointer}
+.card .b{padding:16px 18px}
+.sect{font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin:4px 0 12px}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:680px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--sh)}
+.kpi .l{font-size:12px;color:var(--t3)}
+.kpi .v{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi .dlt{font-family:var(--mono);font-size:11px;margin-top:4px}
+.kpi .dlt.up{color:var(--green)}.kpi .dlt.dn{color:var(--red)}
+
+.cols{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+@media(max-width:960px){.cols{grid-template-columns:1fr}}
+
+/* attention feed */
+.att{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.att:last-child{border-bottom:0}
+.att .ic{width:30px;height:30px;border-radius:9px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.att .ic.r{background:var(--red-bg);color:var(--red)}.att .ic.a{background:var(--amber-bg);color:var(--amber)}.att .ic.m{background:var(--brand-soft);color:var(--brand)}.att .ic.b{background:#e8eefe;color:var(--blue)}
+.att .x{flex:1;min-width:0}
+.att .t{font-size:13.5px;font-weight:600}
+.att .s{font-size:12px;color:var(--t3);margin-top:2px}
+.att .go{font-family:var(--mono);font-size:11px;color:var(--brand);border:1px solid var(--brand-soft);background:var(--brand-soft);border-radius:7px;padding:6px 11px;cursor:pointer;flex:0 0 auto}
+.att .go:hover{background:var(--brand);color:#fff}
+
+/* activity feed */
+.feed .it{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+.feed .it:last-child{border-bottom:0}
+.feed .dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex:0 0 auto;background:var(--ind)}
+.feed .tm{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--t4);white-space:nowrap}
+.feed b{font-weight:600}
+
+/* chart */
+.chart{display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:8px}
+.chart .bar{flex:1;background:linear-gradient(180deg,var(--brand),#ff5fb0);border-radius:6px 6px 0 0;position:relative;min-height:6px}
+.chart .bar span{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:10px;color:var(--t3)}
+.chart .bar b{position:absolute;top:-18px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:10px;color:var(--t2)}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);font-weight:500;padding:0 14px 10px}
+.tbl td{padding:13px 14px;border-top:1px solid var(--line);font-size:13.5px;vertical-align:middle}
+.tbl tr.row{cursor:pointer}
+.tbl tr.row:hover td{background:#fafbff}
+.who{display:flex;align-items:center;gap:11px}
+.who .ava{width:34px;height:34px;border-radius:9px;background:#eef0f7;color:var(--t2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:0 0 auto}
+.who .nm{font-weight:600}.who .mt{font-size:11.5px;color:var(--t3);font-family:var(--mono)}
+.score{display:inline-flex;align-items:center;gap:9px}
+.ring{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:0 0 auto}
+.ring i{width:26px;height:26px;border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px}
+.pill .d{width:6px;height:6px;border-radius:50%}
+.pill.new{background:#eef0f7;color:var(--t2)}.pill.new .d{background:var(--t3)}
+.pill.screen{background:#e8eefe;color:var(--blue)}.pill.screen .d{background:var(--blue)}
+.pill.sub{background:var(--brand-soft);color:var(--brand)}.pill.sub .d{background:var(--brand)}
+.pill.intv{background:#efeafe;color:var(--ind)}.pill.intv .d{background:var(--ind)}
+.pill.placed{background:var(--green-bg);color:var(--green)}.pill.placed .d{background:var(--green)}
+.pill.open{background:var(--green-bg);color:var(--green)}.pill.open .d{background:var(--green)}
+.pill.hold{background:var(--amber-bg);color:var(--amber)}.pill.hold .d{background:var(--amber)}
+.pill.stale{background:var(--red-bg);color:var(--red)}.pill.stale .d{background:var(--red)}
+.tag{font-family:var(--mono);font-size:11px;color:var(--t2);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:2px 7px;margin-right:4px;white-space:nowrap}
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.fpill{font-size:12px;padding:7px 13px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--t2);cursor:pointer}
+.fpill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn{font-size:13px;font-weight:600;border-radius:9px;padding:9px 15px;cursor:pointer;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-family:var(--sans)}
+.btn.pri{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn.pri:hover{background:var(--brand-dk)}
+.btn.sm{padding:6px 11px;font-size:12px}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(16,19,32,.45);opacity:0;pointer-events:none;transition:.25s;z-index:30}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,94vw);background:var(--panel);box-shadow:-20px 0 60px rgba(16,19,32,.25);transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.7,.2,1);z-index:31;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer .dh{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px}
+.drawer .dh .x{margin-left:auto;width:32px;height:32px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);cursor:pointer;color:var(--t2);font-size:15px}
+.drawer .db{flex:1;overflow-y:auto;padding:22px}
+.drawer .da{padding:16px 22px;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap}
+.comp{margin:10px 0}
+.comp .cl{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:4px}.comp .cl b{color:var(--ink)}
+.bar2{height:7px;background:#eef0f7;border-radius:5px;overflow:hidden}.bar2 i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),#ff5fb0);border-radius:5px}
+.doc{background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin-top:12px}
+.doc h4{margin:0 0 8px;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--brand)}
+.doc .r{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;border-bottom:1px solid #eef0f5}.doc .r:last-child{border-bottom:0}.doc .r span{color:var(--t3)}
+.doc ul{margin:0;padding-left:16px}.doc li{font-size:12.5px;margin:5px 0;line-height:1.4}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;box-shadow:0 12px 40px rgba(0,0,0,.3);opacity:0;transition:.3s;z-index:40;display:flex;align-items:center;gap:9px}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast .k{color:#7fe3b6}
+.exit{font-family:var(--mono);font-size:11px}
+/* clients */
+.clientcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);padding:18px;margin-bottom:14px}
+.leadbar{display:flex;align-items:center;gap:10px;margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--t2)}
+.leadbar b{color:var(--brand);font-size:15px}
+/* ---- feature spotlight (zoom callouts) ---- */
+.spot-scrim{position:fixed;inset:0;background:rgba(8,10,20,.7);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:.4s;z-index:50}
+.spot-scrim.on{opacity:1;pointer-events:auto}
+.spot-clone{position:fixed;z-index:52;background:var(--panel);border-radius:14px;padding:6px;box-shadow:0 36px 90px rgba(0,0,0,.55),0 0 0 2px var(--brand),0 0 0 9px rgba(236,11,140,.22);transform-origin:center;transition:transform .6s cubic-bezier(.2,.85,.2,1),opacity .4s;opacity:0}
+.spot-clone.on{opacity:1}
+.spot-callout{position:fixed;z-index:53;width:312px;background:#14151f;color:#fff;border:1px solid #2a2e3e;border-radius:16px;padding:20px;box-shadow:0 28px 80px rgba(0,0,0,.55);opacity:0;transform:translateY(12px) scale(.97);transition:.45s cubic-bezier(.2,.85,.2,1);z-index:53}
+.spot-callout.on{opacity:1;transform:none}
+.spot-callout .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
+.spot-callout h4{margin:9px 0 7px;font-size:19px;font-weight:800;letter-spacing:-.02em;color:#fff;line-height:1.1}
+.spot-callout p{margin:0;font-size:13.5px;color:#bfc4d4;line-height:1.55}
+.spot-callout .rw{display:flex;align-items:center;gap:12px;margin-top:18px}
+.spot-callout .dts{display:flex;gap:6px;flex:1}.spot-callout .dts i{width:6px;height:6px;border-radius:50%;background:#3a3f52}.spot-callout .dts i.on{background:var(--brand);transform:scale(1.3)}
+.spot-callout .nx{background:var(--brand);color:#fff;border:0;border-radius:9px;padding:9px 18px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.spot-callout .nx:hover{background:var(--brand-dk)}
+.spot-skip{position:fixed;top:16px;right:18px;z-index:54;color:#fff;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:7px 13px;font-size:12px;font-family:var(--mono);cursor:pointer;opacity:0;pointer-events:none;transition:.3s}
+.spot-skip.on{opacity:1;pointer-events:auto}
+.spot-intro{position:fixed;inset:0;z-index:56;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 38%,rgba(236,11,140,.20),rgba(8,10,20,.94) 58%);opacity:0;pointer-events:none;transition:.55s}
+.spot-intro.on{opacity:1;pointer-events:auto}
+.spot-intro .c{text-align:center;max-width:560px;padding:0 24px;transform:translateY(14px);transition:.6s;opacity:0}
+.spot-intro.on .c{transform:none;opacity:1}
+.spot-intro .wm{font-weight:800;font-size:22px;letter-spacing:-.04em;color:#fff;margin-bottom:20px}.spot-intro .wm .g{color:var(--brand)}
+.spot-intro .k{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);margin-bottom:12px}
+.spot-intro h2{font-size:clamp(32px,5.4vw,50px);font-weight:800;letter-spacing:-.035em;color:#fff;margin:0 0 16px;line-height:1.04}
+.spot-intro p{color:#c5c9d6;font-size:16px;line-height:1.55;margin:0 auto 28px;max-width:44ch}
+.spot-intro .go{background:var(--brand);color:#fff;border:0;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+.spot-intro .go:hover{background:var(--brand-dk)}
+/* channels (Teams & Slack) */
+.chat{max-width:720px}
+.chead{font-weight:700;font-size:14px;padding:0 0 14px;border-bottom:1px solid var(--line);margin-bottom:18px;color:var(--ink)}
+.chead span{color:var(--t3);font-weight:400;font-family:var(--mono);font-size:12px}
+.cmsg{display:flex;gap:11px;margin-bottom:16px}
+.cmsg .a{width:36px;height:36px;border-radius:8px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:12px}
+.cmsg.bot .a{background:linear-gradient(135deg,var(--brand),var(--ind))}
+.cmsg.me .a{background:#7a7a88}
+.chat.slack .cmsg.bot .a{background:#4a154b}
+.cmsg .nm{font-weight:700;font-size:13.5px;color:var(--ink)}
+.cmsg .nm .tg{font-family:var(--mono);font-size:10px;color:var(--brand);margin-left:7px;font-weight:500}
+.cmsg .nm .tm{font-family:var(--mono);font-size:10.5px;color:var(--t4);margin-left:7px;font-weight:400}
+.cmsg .tx{font-size:13.5px;color:var(--ink);margin-top:3px;line-height:1.5}
+.acard{margin-top:8px;border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--panel);box-shadow:var(--sh);max-width:470px;border-left:3px solid var(--ind)}
+.chat.slack .acard{border-left:4px solid #36c5f0}
+.acard .rev{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--brand);background:var(--brand-soft);border-radius:6px;padding:3px 9px;margin-top:9px}
+.acard .btns{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+.acard .b{font-size:12px;font-weight:600;border-radius:7px;padding:7px 13px;cursor:pointer;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-family:var(--sans)}
+.acard .b.p{background:var(--ind);color:#fff;border-color:var(--ind)}
+.chat.slack .acard .b.p{background:#007a5a;border-color:#007a5a}
+/* revenue funnel */
+.fn{margin:11px 0}
+.fl{display:flex;justify-content:space-between;font-size:13px;color:var(--t2);margin-bottom:5px}.fl b{color:var(--ink)}
+.fbwrap{background:#eef0f7;border-radius:6px;overflow:hidden}
+.fb{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--brand),var(--ind))}
+/* ===== open-design elevation pass (Stripe depth · Linear type discipline) ===== */
+body{background:#f3f4f8}
+.view{background:radial-gradient(130% 90% at 50% -12%,#fbfbfe,#f3f4f8 58%)}
+.card,.kpi,.clientcard,.sub-modal{border-color:#edeef4;border-radius:16px;box-shadow:0 1px 2px rgba(17,24,39,.04),0 14px 30px -14px rgba(17,24,39,.14)}
+.kpi{transition:transform .18s ease,box-shadow .18s ease}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(17,24,39,.05),0 22px 44px -18px rgba(17,24,39,.22)}
+.kpi .v{font-size:30px;letter-spacing:-.035em}
+.kpi .l{font-weight:500;color:var(--t2)}
+.card .h h3{letter-spacing:-.012em;font-size:14.5px}
+.top h1{letter-spacing:-.03em;font-weight:800}
+.tbl td{border-color:#eef0f5}
+.tbl tr.row{transition:background .12s}
+.pill{box-shadow:inset 0 0 0 1px rgba(0,0,0,.015)}
+.btn.pri{box-shadow:0 1px 2px rgba(236,11,140,.35),0 10px 22px -10px rgba(236,11,140,.55)}
+.side{background:linear-gradient(180deg,#15161f 0%,#0c0d14 100%)}
+.nav.on{background:linear-gradient(90deg,rgba(236,11,140,.18),rgba(236,11,140,.03))}
+.att{transition:background .12s}.att:hover{background:#fafbff;border-radius:10px}
+/* submittal modal */
+.modal-c{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-c.on{display:flex}
+.modal-c .bg{position:absolute;inset:0;background:rgba(14,17,28,.52);backdrop-filter:blur(3px)}
+.sub-modal{position:relative;background:#fff;width:min(560px,96vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden;animation:f .3s}
+.sub-modal .h{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.sub-b{padding:20px 22px;overflow-y:auto}
+.sub-sec{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin:18px 0 10px}
+.sub-sec:first-child{margin-top:0}
+.chk{display:flex;gap:11px;align-items:flex-start;padding:7px 0;font-size:13.5px;color:var(--ink)}
+.chk .c{flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:var(--green-bg);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px}
+.chk .c.i{background:var(--brand-soft);color:var(--brand)}
+.chan-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chan{font-family:var(--mono);font-size:11.5px;border:1px solid var(--line2);border-radius:9px;padding:8px 12px;color:var(--t2);background:var(--bg)}
+/* candidate record */
+.rec-back{font-family:var(--mono);font-size:12px;color:var(--t3);cursor:pointer;margin-bottom:12px;display:inline-block}
+.rec-back:hover{color:var(--brand)}
+.rec-head{display:flex;gap:18px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 1px 2px rgba(17,24,39,.04),0 14px 30px -14px rgba(17,24,39,.14);margin-bottom:16px}
+.rec-id{flex:1;min-width:0}
+.rec-id h2{font-size:23px;font-weight:800;letter-spacing:-.025em;margin:0}
+.rec-id .meta{font-size:12.5px;color:var(--t3);font-family:var(--mono);margin-top:3px}
+.rec-facts{display:flex;gap:26px;margin-top:15px;flex-wrap:wrap}
+.rec-facts span{display:block;color:var(--t3);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.rec-facts b{color:var(--ink);font-size:13.5px}
+.rec-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.verchip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--green);background:var(--green-bg);border:1px solid #bfe6d2;border-radius:999px;padding:5px 11px;white-space:nowrap}
+.rec-tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.rec-tabs button{font-size:13.5px;font-weight:600;background:none;border:0;border-bottom:2px solid transparent;color:var(--t3);padding:11px 16px;cursor:pointer;font-family:var(--sans)}
+.rec-tabs button.on{color:var(--brand);border-bottom-color:var(--brand)}
+.rec-cols{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+@media(max-width:900px){.rec-cols{grid-template-columns:1fr}.rec-head{flex-wrap:wrap}.rec-actions{justify-content:flex-start}}
+
+/* ============================================================
+   HI-DEF OCEAN RETHEME — wins over the light elevation pass.
+   ============================================================ */
+body{background:#031b2e}
+.app{background:#031b2e}
+.main{background:transparent}
+.view{background:radial-gradient(130% 90% at 50% -12%,rgba(92,200,255,.12),transparent 55%),linear-gradient(180deg,#063048 0%,#031a2e 55%,#020f1d 100%)}
+.top{background:rgba(4,28,46,.55)!important;backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border-bottom:1px solid var(--line)}
+.search{background:rgba(255,255,255,.05)}
+/* sidebar */
+.side{background:linear-gradient(180deg,#04243b 0%,#020f1d 100%)!important;border-right:1px solid var(--line)}
+.nav:hover{background:rgba(255,255,255,.05)}
+.nav.on{background:rgba(52,227,210,.13)!important}
+.nav .ct{background:rgba(255,255,255,.06)}
+.side .foot{border-top-color:var(--line)}
+.chip.teams{background:rgba(92,200,255,.14);border-color:var(--line2)}
+/* glass cards */
+.card,.kpi,.clientcard,.rec-head{background:rgba(255,255,255,.05);border-color:var(--line)!important;box-shadow:var(--sh)!important;backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2)}
+.kpi:hover{box-shadow:0 30px 60px -26px rgba(0,0,0,.7)!important;transform:translateY(-2px)}
+.kpi .v{color:#fff}
+/* attention + activity */
+.att:hover{background:rgba(255,255,255,.04)!important}
+.att .ic.b{background:rgba(92,200,255,.16);color:var(--ind)}
+.att .go:hover{color:#03161a}
+/* chart */
+.chart .bar{background:linear-gradient(180deg,#34e3d2,#37c6ff)}
+/* tables */
+.tbl td{border-color:var(--line)!important}
+.tbl tr.row:hover td{background:rgba(255,255,255,.04)!important}
+.who .ava{background:rgba(255,255,255,.07)}
+.ring i{background:#0a2238}
+/* pills */
+.pill{box-shadow:none}
+.pill.new{background:rgba(255,255,255,.08);color:var(--t2)}
+.pill.screen,.pill.intv{background:rgba(92,200,255,.16);color:var(--ind)}
+/* buttons / filters */
+.fpill.on{background:var(--brand);color:#03161a;border-color:var(--brand)}
+.btn.pri,.btn.pri:hover{color:#03161a;box-shadow:0 12px 26px -12px rgba(52,227,210,.6)}
+/* drawer / docs */
+.drawer{background:rgba(6,32,52,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.bar2{background:rgba(255,255,255,.09)}.bar2 i{background:linear-gradient(90deg,#34e3d2,#37c6ff)}
+.doc .r{border-bottom-color:var(--line)}
+/* toast */
+.toast{background:rgba(4,28,46,.96);border:1px solid var(--line2);color:#fff}
+.toast .k{color:var(--brand)}
+/* channels */
+.acard{background:rgba(255,255,255,.05)}
+.acard .b.p{color:#03161a}
+.chat.slack .acard .b.p{color:#fff}
+/* revenue */
+.fbwrap{background:rgba(255,255,255,.09)}
+/* submittal modal */
+.sub-modal{background:rgba(6,32,52,.97)!important;border:1px solid var(--line);backdrop-filter:blur(18px);box-shadow:0 40px 100px -30px rgba(0,0,0,.8)!important}
+.chan{background:rgba(255,255,255,.05)}
+/* candidate record */
+.verchip{border-color:var(--line2)}
+/* spotlight */
+.spot-clone{box-shadow:0 36px 90px rgba(0,0,0,.6),0 0 0 2px var(--brand),0 0 0 9px rgba(52,227,210,.22)}
+.spot-callout .nx,.spot-callout .nx:hover{color:#03161a}
+.spot-intro{background:radial-gradient(circle at 50% 38%,rgba(52,227,210,.22),rgba(2,14,26,.95) 58%)}
+.spot-intro .go{color:#03161a}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="logo"><div><div class="wm"><span class="g">g</span>.AI</div><div class="env">Staffing OS · prod</div></div></div>
+    <div class="navg">Workspace</div>
+    <button class="nav on" data-v="dashboard"><span class="i">◧</span> Dashboard</button>
+    <button class="nav" data-v="candidates"><span class="i">◆</span> Candidates <span class="ct">128</span></button>
+    <button class="nav" data-v="jobs"><span class="i">▦</span> Job Orders <span class="ct">14</span></button>
+    <button class="nav" data-v="assignments"><span class="i">⇄</span> Assignments <span class="ct">23</span></button>
+    <button class="nav" data-v="channels"><span class="i">◳</span> Channels</button>
+    <div class="navg">Growth</div>
+    <button class="nav" data-v="revenue"><span class="i">＄</span> Revenue</button>
+    <button class="nav" data-v="clients"><span class="i">◎</span> Clients <span class="ct">2</span></button>
+    <div class="navg">Insight</div>
+    <button class="nav" data-v="activity"><span class="i">◔</span> Activity</button>
+    <div class="sp"></div>
+    <div class="foot"><a href="#" id="tourBtn">✨ What's new — take the tour</a><a href="staffing-os.html">‹ Staffing OS</a></div>
+  </aside>
+  <div class="main">
+    <div class="top">
+      <div><h1 id="pgTitle">Dashboard</h1><div class="sub" id="pgSub">Tuesday · your desk at a glance</div></div>
+      <div class="search">⌕ Search candidates, roles, clients…</div>
+      <div class="chip teams">◳ Microsoft Teams</div>
+      <div class="chip" id="envChip"><span class="d"></span>Bullhorn</div>
+      <div class="av">DW</div>
+    </div>
+    <div class="view" id="view"></div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="modal-c" id="subModal"><div class="bg" onclick="closeSub()"></div><div class="sub-modal card" id="subInner"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- data ---------- */
+var DATA={
+  candidates:[
+    {id:1,name:'Dana Whitfield',role:'Sr Platform Engineer',score:92,band:'strong',status:'sub',loc:'San Diego · remote',comp:'$165k',avail:'~4 wks',skills:['AWS','Kubernetes','Terraform','Python'],src:'Caliber · interview',up:'2h',
+      comps:[['Must-have skills',100,'4 of 4'],['Seniority',100,'senior = senior'],['Comp fit',100,'in band'],['Bonus skills',50,'1 of 2']],
+      hi:['Cut deploy time 40% with IaC.','Deep Kubernetes + Terraform; mentors two engineers.','Remote-native, ships fast.']},
+    {id:2,name:'Aisha Okafor',role:'Sr Platform Engineer',score:92,band:'strong',status:'screen',loc:'Atlanta · remote',comp:'$168k',avail:'2 wks',skills:['AWS','Kubernetes','Terraform','Airflow'],src:'Caliber · interview',up:'5h',
+      comps:[['Must-have skills',100,'4 of 4'],['Seniority',100,'senior = senior'],['Comp fit',100,'in band'],['Bonus skills',50,'1 of 2']],
+      hi:['Built the data platform at a Series C.','Owns CI/CD end-to-end.','Strong written comms.']},
+    {id:3,name:'Lena Kowalski',role:'Sr Platform Engineer',score:78,band:'strong',status:'new',loc:'Remote',comp:'$190k',avail:'now',skills:['AWS','Terraform','Observability'],src:'Caliber · referral',up:'1d',
+      comps:[['Must-have skills',100,'4 of 4'],['Seniority',70,'lead vs senior'],['Comp fit',95,'over band'],['Bonus skills',0,'0 of 2']],
+      hi:['Lead-level; ran a 6-person platform team.','Observability specialist.']},
+    {id:4,name:'Marco Reyes',role:'DevOps Lead',score:85,band:'strong',status:'intv',loc:'Austin · hybrid',comp:'$150k',avail:'3 wks',skills:['AWS','Docker','Bash','Linux'],src:'Caliber · interview',up:'1d',
+      comps:[['Must-have skills',75,'3 of 4'],['Seniority',100,'lead = lead'],['Comp fit',100,'in band'],['Bonus skills',100,'2 of 2']],
+      hi:['Scaled infra for a 2M-user app.','Calm in incidents.']},
+    {id:5,name:'Priya Anand',role:'ML Engineer',score:63,band:'possible',status:'new',loc:'Remote',comp:'$185k',avail:'now',skills:['Python','ML','NLP','AWS'],src:'Caliber · inbound',up:'2d',
+      comps:[['Must-have skills',50,'2 of 4'],['Seniority',70,'lead vs senior'],['Comp fit',73,'over band'],['Bonus skills',50,'1 of 2']],
+      hi:['Strong ML background; lighter on infra.']},
+    {id:6,name:'Devin Park',role:'Platform Engineer',score:71,band:'possible',status:'placed',loc:'Denver · remote',comp:'$140k',avail:'placed',skills:['Python','Docker','AWS'],src:'Caliber · interview',up:'3d',
+      comps:[['Must-have skills',50,'2 of 4'],['Seniority',70,'mid vs senior'],['Comp fit',87,'under band'],['Bonus skills',50,'1 of 2']],
+      hi:['Placed at Globex last week.']},
+  ],
+  jobs:[
+    {t:'Sr Platform Engineer',client:'Acme Robotics',status:'open',owner:'You',open:2,up:'1d ago',stale:false},
+    {t:'Data Analyst',client:'Northwind',status:'open',owner:'J. Lee',open:1,up:'9d ago',stale:true},
+    {t:'DevOps Lead',client:'Globex',status:'open',owner:'You',open:1,up:'2d ago',stale:false},
+    {t:'ML Engineer',client:'Initech',status:'hold',owner:'R. Cole',open:1,up:'4d ago',stale:false},
+    {t:'SRE',client:'Hooli',status:'open',owner:'J. Lee',open:3,up:'12d ago',stale:true},
+  ],
+  assignments:[
+    {c:'Dana Whitfield',cl:'Acme Robotics',span:'Mon → 6 mo',status:'new',next:'Confirm start'},
+    {c:'Marco Reyes',cl:'Globex',span:'in progress',status:'onb',next:'Start onboarding'},
+    {c:'Priya Anand',cl:'Initech',span:'ends in 3d',status:'end',next:'Extend?'},
+    {c:'Devin Park',cl:'Globex',span:'active',status:'active',next:'—'},
+  ],
+  activity:[
+    ['Caliber','built a profile for <b>Dana Whitfield</b> from her interview','2h'],
+    ['Radar','flagged <b>Data Analyst · Northwind</b> — no update in 9 days','3h'],
+    ['Client','<b>Acme Robotics</b> shared interest in Dana Whitfield','4h'],
+    ['Relay','onboarding due today for <b>Marco Reyes</b>','5h'],
+    ['Caliber','submitted <b>Aisha Okafor</b> to Acme Robotics','6h'],
+    ['Pulse','weekly summary sent to leadership','1d'],
+  ],
+  clients:[
+    {n:'Acme Robotics',role:'Sr Platform Engineer',list:[{n:'Dana Whitfield',s:92},{n:'Aisha Okafor',s:92},{n:'Lena Kowalski',s:78}]},
+    {n:'Globex',role:'DevOps Lead',list:[{n:'Marco Reyes',s:85},{n:'Devin Park',s:71}]},
+  ],
+};
+var STATUS={new:['new','New'],screen:['screen','Screened'],sub:['sub','Submitted'],intv:['intv','Interview'],placed:['placed','Placed']};
+function ring(s){var c=s>=80?'var(--green)':s>=70?'var(--amber)':'var(--t3)';return '<span class="ring" style="background:conic-gradient('+c+' '+(s*3.6)+'deg,#eef0f7 0)"><i style="color:'+c+'">'+s+'</i></span>';}
+function pill(k){var m={new:'new',screen:'screen',sub:'sub',intv:'intv',placed:'placed',open:'open',hold:'hold'};var lbl={new:'New',screen:'Screened',sub:'Submitted',intv:'Interview',placed:'Placed',open:'Open',hold:'On hold'};return '<span class="pill '+m[k]+'"><span class="d"></span>'+lbl[k]+'</span>';}
+function initials(n){return n.split(' ').map(function(x){return x[0];}).slice(0,2).join('');}
+
+/* ---------- views ---------- */
+var V={};
+V.dashboard=function(){
+  var months=['Jan','Feb','Mar','Apr','May','Jun'],vals=[4,6,5,8,7,9],mx=10;
+  return '<div class="kpis">'
+   +kpi('Active candidates','128','+12 this week','up')
+   +kpi('Open roles','14','3 added','up')
+   +kpi('Placements · MTD','9','+2 vs last','up')
+   +kpi('Sales leads','6','from client interest','up')
+   +kpi('Pipeline value','$2.4M','+$320k this week','up')
+   +'</div>'
+   +'<div class="cols">'
+   +'<div class="card"><div class="h"><h3>Needs your attention</h3><span class="more" onclick="go(\'jobs\')">view all</span></div><div class="b">'
+     +att('m','C','Caliber profiled Dana Whitfield','Match 92 · ready to submit to Acme Robotics','candidates')
+     +att('r','!','Northwind · Data Analyst is stale','No status update in 9 days — Radar flagged it','jobs')
+     +att('a','⇄','Onboarding due today','Relay · Marco Reyes starts at Globex','assignments')
+     +att('b','◎','Acme Robotics shared interest','New sales lead from the client portal','clients')
+   +'</div></div>'
+   +'<div class="card"><div class="h"><h3>Placements</h3><span class="more">last 6 mo</span></div><div class="b"><div class="chart">'
+     +months.map(function(m,n){return '<div class="bar" style="height:'+(vals[n]/mx*100)+'%"><b>'+vals[n]+'</b><span>'+m+'</span></div>';}).join('')
+   +'</div></div></div>'
+   +'</div>'
+   +'<div class="card" style="margin-top:16px"><div class="h"><h3>Recent activity</h3><span class="more" onclick="go(\'activity\')">open Pulse</span></div><div class="b feed">'
+     +DATA.activity.map(function(a){return '<div class="it"><span class="dot"></span><div><b>'+a[0]+'</b> '+a[1]+'</div><span class="tm">'+a[2]+'</span></div>';}).join('')
+   +'</div></div>';
+};
+function kpi(l,v,d,dir){return '<div class="kpi"><div class="l">'+l+'</div><div class="v">'+v+'</div><div class="dlt '+dir+'">'+(dir==='up'?'▲ ':'▼ ')+d+'</div></div>';}
+function att(ic,gl,t,s,v){return '<div class="att"><span class="ic '+ic+'">'+gl+'</span><div class="x"><div class="t">'+t+'</div><div class="s">'+s+'</div></div><button class="go" onclick="go(\''+v+'\')">Open</button></div>';}
+
+V.candidates=function(){
+  return '<div class="toolbar"><div class="fpill on">All</div><div class="fpill">Strong</div><div class="fpill">Submitted</div><div class="fpill">Interview</div><div style="flex:1"></div><button class="btn pri" onclick="runCaliber()">＋ Run Caliber</button></div>'
+   +'<div class="card"><table class="tbl"><thead><tr><th>Candidate</th><th>Target role</th><th>Match</th><th>Status</th><th>Skills</th><th>Updated</th></tr></thead><tbody>'
+   +DATA.candidates.map(function(c){return '<tr class="row" onclick="openCand('+c.id+')"><td><div class="who"><div class="ava">'+initials(c.name)+'</div><div><div class="nm">'+c.name+'</div><div class="mt">'+c.src+'</div></div></div></td>'
+     +'<td>'+c.role+'</td><td><span class="score">'+ring(c.score)+'</span></td><td>'+pill(c.status)+'</td>'
+     +'<td>'+c.skills.slice(0,3).map(function(s){return '<span class="tag">'+s+'</span>';}).join('')+'</td><td class="mt" style="color:var(--t3);font-family:var(--mono);font-size:12px">'+c.up+' ago</td></tr>';}).join('')
+   +'</tbody></table></div>';
+};
+V.jobs=function(){
+  return '<div class="toolbar"><div class="fpill on">All</div><div class="fpill">Open</div><div class="fpill">Stale</div><div style="flex:1"></div><button class="btn">＋ New job order</button></div>'
+   +'<div class="card"><table class="tbl"><thead><tr><th>Role</th><th>Client</th><th>Status</th><th>Owner</th><th>Openings</th><th>Last update</th><th></th></tr></thead><tbody id="jobBody">'+jobRows()+'</tbody></table></div>';
+};
+function jobRows(){return DATA.jobs.map(function(j,i){return '<tr><td><b>'+j.t+'</b></td><td>'+j.client+'</td><td>'+(j.set?pill('open'):pill(j.status))+'</td><td>'+j.owner+'</td><td>'+j.open+'</td>'
+  +'<td>'+(j.stale?'<span class="pill stale"><span class="d"></span>'+j.up+'</span>':'<span class="mt" style="color:var(--t3);font-family:var(--mono);font-size:12px">'+j.up+'</span>')+'</td>'
+  +'<td>'+(j.stale?'<button class="btn sm" onclick="fixJob('+i+')">Update</button>':(j.set?'<span class="mt" style="color:var(--green);font-family:var(--mono);font-size:11px">✓ updated</span>':''))+'</td></tr>';}).join('');}
+V.assignments=function(){
+  var lbl={new:['screen','Upcoming'],onb:['intv','Onboarding'],end:['hold','Ending soon'],active:['placed','Active']};
+  return '<div class="sect">Relay · assignment lifecycle</div><div class="card"><table class="tbl"><thead><tr><th>Candidate</th><th>Client</th><th>Timeline</th><th>Status</th><th>Next action</th></tr></thead><tbody id="asgBody">'+
+   DATA.assignments.map(function(a,i){var L=lbl[a.status];return '<tr><td><div class="who"><div class="ava">'+initials(a.c)+'</div><div class="nm">'+a.c+'</div></div></td><td>'+a.cl+'</td><td class="mt" style="color:var(--t2)">'+a.span+'</td><td><span class="pill '+L[0]+'"><span class="d"></span>'+L[1]+'</span></td><td>'+(a.done?'<span style="color:var(--green);font-family:var(--mono);font-size:12px">✓ handled</span>':(a.next==='—'?'—':'<button class="btn sm" onclick="fixAsg('+i+')">'+a.next+'</button>'))+'</td></tr>';}).join('')
+   +'</tbody></table></div>';
+};
+V.activity=function(){
+  var rec=[['You',9],['J. Lee',6],['R. Cole',4]],mx=10;
+  return '<div class="kpis" style="grid-template-columns:repeat(4,1fr)">'+kpi('New starts','7','this week','up')+kpi('Pending','4','onboarding','up')+kpi('Ending soon','3','next 14d','dn')+kpi('Completed','12','this month','up')+'</div>'
+   +'<div class="cols"><div class="card"><div class="h"><h3>Pipeline by stage</h3></div><div class="b"><div class="chart">'
+   +[['New',22],['Screened',16],['Submitted',11],['Interview',6],['Placed',9]].map(function(s){return '<div class="bar" style="height:'+(s[1]/22*100)+'%"><b>'+s[1]+'</b><span>'+s[0]+'</span></div>';}).join('')
+   +'</div></div></div>'
+   +'<div class="card"><div class="h"><h3>Placements by recruiter</h3></div><div class="b">'
+   +rec.map(function(r){return '<div class="comp"><div class="cl"><span>'+r[0]+'</span><b>'+r[1]+'</b></div><div class="bar2"><i style="width:'+(r[1]/mx*100)+'%"></i></div></div>';}).join('')
+   +'</div></div></div>'
+   +'<div class="card" style="margin-top:16px"><div class="h"><h3>Activity stream</h3></div><div class="b feed">'+DATA.activity.map(function(a){return '<div class="it"><span class="dot"></span><div><b>'+a[0]+'</b> '+a[1]+'</div><span class="tm">'+a[2]+'</span></div>';}).join('')+'</div></div>';
+};
+V.clients=function(){
+  return '<div class="sect">Client portal · clients review shortlists and signal interest, in their own Teams</div>'
+   +DATA.clients.map(function(cl,ci){return '<div class="clientcard"><div class="h" style="border:0;padding:0 0 12px"><h3>'+cl.n+' — '+cl.role+'</h3></div>'
+     +cl.list.map(function(c,i){return '<div class="att" style="border-color:var(--line)"><span class="ic m">'+initials(c.n)+'</span><div class="x"><div class="t">'+c.n+'</div><div class="s">Match '+c.s+'</div></div>'+(c.set?'<span class="mt" style="color:var(--brand);font-family:var(--mono);font-size:11px;font-weight:600">★ interest shared · lead created</span>':'<button class="go" onclick="clientInterest('+ci+','+i+')">Interested</button>')+'</div>';}).join('')
+     +'<div class="leadbar">Leads created for sales: <b id="leads'+ci+'">'+(cl.leads||0)+'</b></div></div>';}).join('');
+};
+
+V.channels=function(){
+  return '<div class="toolbar"><div class="fpill on" id="chTeams" onclick="setCh(\'teams\')">◳ Microsoft Teams</div><div class="fpill" id="chSlack" onclick="setCh(\'slack\')">＃ Slack</div><span style="margin-left:6px;color:var(--t3);font-family:var(--mono);font-size:12px">same agents — both surfaces</span></div><div id="chatWrap">'+chat('teams')+'</div>';
+};
+function setCh(s){var a=document.getElementById('chTeams'),b=document.getElementById('chSlack');if(a)a.classList.toggle('on',s==='teams');if(b)b.classList.toggle('on',s==='slack');document.getElementById('chatWrap').innerHTML=chat(s);}
+function chat(s){var slack=s==='slack';
+  var head=slack?'<div class="chead">＃ recruiting <span>· Staffing OS app</span></div>':'<div class="chead">Recruiting › General <span>· Staffing OS</span></div>';
+  var m=[
+   bot('Caliber','· profiling','Dana Whitfield is <b>match-ready</b> — 92 for Sr Platform Engineer · Acme Robotics.',[['View profile',0],['Submit to client',1]],'+$48k est. GP'),
+   me('Submit her.'),
+   bot('Caliber','· ATS','✓ Submitted to Acme in Bullhorn. Client notified in their channel.',null,null),
+   bot('Client · Acme','· interest','Acme shared <b>interest</b> in Dana — qualified lead created.',[['Open lead',0]],'pipeline +$48k'),
+   bot('Radar','· job-order','Data Analyst · Northwind — no update in 9 days.',[['Update status',1]],null),
+   bot('Relay','· assignments','Onboarding due today — Marco Reyes starts at Globex.',[['Start onboarding',1]],null),
+  ];
+  return '<div class="chat '+(slack?'slack':'teams')+'">'+head+m.join('')+'</div>';
+}
+function bot(name,tag,text,btns,rev){
+  var card='<div class="acard"><div class="tx">'+text+'</div>'+(rev?'<div class="rev">'+rev+'</div>':'')+(btns?'<div class="btns">'+btns.map(function(b){return '<button class="b'+(b[1]?' p':'')+'" onclick="toast(\'✦ '+b[0]+'\')">'+b[0]+'</button>';}).join('')+'</div>':'')+'</div>';
+  return '<div class="cmsg bot"><div class="a">S</div><div><div class="nm">'+name+'<span class="tg">'+tag+'</span><span class="tm">now</span></div>'+card+'</div></div>';
+}
+function me(text){return '<div class="cmsg me"><div class="a">DW</div><div><div class="nm">You<span class="tm">now</span></div><div class="tx">'+text+'</div></div></div>';}
+
+V.revenue=function(){
+  return '<div class="kpis">'+kpi('Pipeline value','$2.4M','+$320k this week','up')+kpi('Weighted forecast','$840k','this quarter','up')+kpi('GP placed · MTD','$196k','+18% vs last','up')+kpi('Lead → placement','34%','conversion','up')+kpi('Run-rate','$2.1M','annualized GP','up')+'</div>'
+   +'<div class="cols"><div class="card"><div class="h"><h3>Leads → revenue</h3><span class="more">this quarter</span></div><div class="b">'+funnel()+'</div></div>'
+   +'<div class="card"><div class="h"><h3>GP placed by month</h3></div><div class="b"><div class="chart">'+[['Jan',120],['Feb',140],['Mar',135],['Apr',170],['May',160],['Jun',196]].map(function(x){return '<div class="bar" style="height:'+(x[1]/200*100)+'%"><b>$'+x[1]+'k</b><span>'+x[0]+'</span></div>';}).join('')+'</div></div></div></div>'
+   +'<div class="card" style="margin-top:16px"><div class="h"><h3>Top open roles by value</h3><span class="more" onclick="go(\'jobs\')">job orders</span></div><div class="b">'+[['Sr Platform Engineer · Acme','2 openings','$96k GP'],['SRE · Hooli','3 openings','$132k GP'],['DevOps Lead · Globex','1 opening','$54k GP']].map(function(x){return '<div class="att" style="border-color:var(--line)"><span class="ic m">＄</span><div class="x"><div class="t">'+x[0]+'</div><div class="s">'+x[1]+'</div></div><b style="font-family:var(--mono);color:var(--brand)">'+x[2]+'</b></div>';}).join('')+'</div></div>';
+};
+function funnel(){return [['Client signals',24,'',100],['Qualified leads',11,'$528k pipeline',74],['Submittals',9,'$432k',58],['Interviews',6,'$288k',40],['Placements',4,'$196k GP',24]].map(function(x){return '<div class="fn"><div class="fl"><span>'+x[0]+'</span><b>'+x[1]+(x[2]?' · '+x[2]:'')+'</b></div><div class="fbwrap"><div class="fb" style="width:'+x[3]+'%"></div></div></div>';}).join('');}
+
+/* ---------- lifecycle (the "how") ---------- */
+V.lifecycle=function(){
+  return '<div class="sect">How candidates connect</div><div class="kpis" style="grid-template-columns:repeat(5,1fr)">'
+   +src('Apply link','38','web · QR · job post')+src('Referral','21','employee & candidate')+src('Inbound','17','Teams · Slack · email')+src('Sourced','29','Caliber outreach')+src('Re-engaged','12','silver-medalist pool')+'</div>'
+   +'<div class="cols" style="margin-top:4px">'
+   +'<div class="card"><div class="h"><h3>How we capture & verify</h3></div><div class="b">'
+     +cap('Interview transcript','Caliber parses the Teams / Zoom transcript — skills, comp, availability. The model extracts; you confirm.')
+     +cap('Self-service portal','The candidate owns and edits their own profile. Edits sync to the ATS instantly.')
+     +cap('Résumé parse','Drop a résumé — fields extracted, personal contact info stripped automatically.')
+     +cap('Enrichment','Work-history backfill from public profiles, flagged for human review — never auto-trusted.')
+   +'</div></div>'
+   +'<div class="card"><div class="h"><h3>Staying current</h3><span class="more">automatic</span></div><div class="b">'
+     +fresh('Dana Whitfield','Verified 2 days ago','ok')+fresh('Aisha Okafor','Re-confirmation sent','pending')+fresh('Lena Kowalski','Verified 18 days ago','ok')
+     +'<p style="color:var(--t3);font-size:12px;margin:12px 0 0;line-height:1.55">Caliber re-confirms availability & comp with every candidate on a 90-day cadence. Self-service edits sync instantly. Two-way ATS sync keeps Bullhorn / Salesforce and Staffing OS identical — one source of truth.</p>'
+   +'</div></div></div>'
+   +'<div class="sect" style="margin-top:18px">The communication experience</div><div class="cols">'
+   +'<div class="card"><div class="h"><h3>Candidate</h3><span class="more">Teams · email · SMS</span></div><div class="b feed">'
+     +comm('Interview booked','calendar hold + join link','Teams')+comm('Thank-you note','sent by Caliber after the call','Email')+comm('“Confirm your profile”','self-service link, 1-tap edits','Email/SMS')+comm('Right-to-represent','e-signed before submittal','e-sign')+comm('“You’re submitted to Acme”','status update, opt-in','SMS')+comm('Interview invite','self-scheduling link','Teams')
+   +'</div></div>'
+   +'<div class="card"><div class="h"><h3>Client</h3><span class="more">Teams · portal · email</span></div><div class="b feed">'
+     +comm('Shortlist shared','reviewed in their own Teams','Teams')+comm('Submittal received','full package + match rationale','Portal')+comm('Interest shared','one tap → lead created','Portal')+comm('Interview scheduling','adaptive card, pick a slot','Teams')+comm('Feedback request','after each interview','Email')
+   +'</div></div></div>';
+};
+function src(t,n,s){return '<div class="kpi"><div class="l">'+t+'</div><div class="v">'+n+'</div><div style="color:var(--t3);font-family:var(--mono);font-size:11px;margin-top:5px">'+s+'</div></div>';}
+function cap(t,d){return '<div class="att" style="border-color:var(--line)"><span class="ic m">✦</span><div class="x"><div class="t">'+t+'</div><div class="s">'+d+'</div></div></div>';}
+function fresh(n,v,st){return '<div class="att" style="border-color:var(--line)"><span class="ic '+(st==='ok'?'b':'a')+'">'+(st==='ok'?'✓':'⟳')+'</span><div class="x"><div class="t">'+n+'</div><div class="s">'+v+'</div></div>'+(st==='ok'?'<span class="pill placed"><span class="d"></span>Current</span>':'<span class="pill screen"><span class="d"></span>Re-confirming</span>')+'</div>';}
+function comm(t,d,ch){return '<div class="it"><span class="dot"></span><div><b>'+t+'</b> — '+d+'</div><span class="tm">'+ch+'</span></div>';}
+
+/* ---------- submittal flow ---------- */
+function openSubmittal(id){
+  var c=DATA.candidates.find(function(x){return x.id===id;})||DATA.candidates[0];
+  document.getElementById('subInner').innerHTML='<div class="h"><div class="ava" style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--ind));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">'+initials(c.name)+'</div><div><div style="font-weight:800;font-size:16px">Submittal</div><div style="color:var(--t3);font-size:12.5px;margin-top:1px">'+c.name+' → Acme Robotics · Sr Platform Engineer</div></div><button class="x" onclick="closeSub()" style="margin-left:auto;width:32px;height:32px;border-radius:8px;border:1px solid var(--line2);background:#fff;cursor:pointer;color:var(--t2)">✕</button></div>'
+   +'<div class="sub-b" id="subBody">'
+   +'<div class="sub-sec">What this confirms</div>'
+   +chk('Caliber profile — complete & candidate-verified')+chk('Match rationale — '+c.score+'/100, explainable component scores')+chk('Bill rate & availability — '+c.comp+' · '+c.avail)+chk('Right-to-represent — candidate e-signed consent')+chk('Résumé — normalized, personal contact info removed')
+   +'<div class="sub-sec">How & where it’s sent</div><div class="chan-chips"><span class="chan">◳ Client portal · Acme</span><span class="chan">◳ Teams · hiring manager</span><span class="chan">✉ Email · client contact</span></div>'
+   +'<div class="sub-sec">What fires automatically</div>'
+   +chk('Client notified in portal + Teams',1)+chk('Self-scheduling link sent for first interview',1)+chk('Candidate told: “You’re submitted to Acme”',1)+chk('Status → Submitted · pipeline +$48k · ATS updated',1)+chk('Recruiter follow-up task created (T+2 days)',1)
+   +'<button class="btn pri" style="margin-top:20px;width:100%;justify-content:center;display:flex" onclick="sendSubmittal('+c.id+')">Send submittal →</button>'
+   +'</div>';
+  document.getElementById('subModal').classList.add('on');
+}
+function chk(t,i){return '<div class="chk"><span class="c'+(i?' i':'')+'">'+(i?'→':'✓')+'</span><div>'+t+'</div></div>';}
+function sendSubmittal(id){
+  var c=DATA.candidates.find(function(x){return x.id===id;});if(c)c.status='sub';
+  document.getElementById('subBody').innerHTML='<div style="text-align:center;padding:8px 0 4px"><div style="width:54px;height:54px;border-radius:50%;background:var(--green-bg);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px">✓</div><div style="font-weight:800;font-size:18px">Submitted to Acme Robotics</div><div style="color:var(--t3);font-size:12.5px;margin-top:4px;font-family:var(--mono)">Confirmation #SB-'+(1000+id)+' · just now</div></div>'
+   +'<div class="sub-sec" style="margin-top:18px">What just fired</div>'
+   +fired('Client portal updated · Acme notified')+fired('Interview self-scheduling link sent')+fired('Candidate notified · Teams + SMS')+fired('Bullhorn record → Submitted')+fired('Pipeline +$48k · forecast updated')+fired('Follow-up task scheduled · T+2d')
+   +'<button class="btn pri" style="margin-top:20px;width:100%;justify-content:center;display:flex" onclick="closeSub();go(\'record\')">Done</button>';
+  toast('✓ '+c.name.split(' ')[0]+' submitted — every downstream step fired');
+}
+function fired(t){return '<div class="chk"><span class="c">✓</span><div style="flex:1">'+t+'</div><span style="font-family:var(--mono);font-size:10.5px;color:var(--t4)">now</span></div>';}
+function closeSub(){document.getElementById('subModal').classList.remove('on');}
+
+/* ---------- candidate record (the living spine) ---------- */
+var curCand=1, recTab='overview';
+function recGo(t){recTab=t;go('record');}
+V.record=function(){
+  var c=DATA.candidates.find(function(x){return x.id===curCand;})||DATA.candidates[0];
+  var names={overview:'Overview',communication:'Communication',submittals:'Submittals',activity:'Activity'};
+  var tb=['overview','communication','submittals','activity'].map(function(t){return '<button class="'+(recTab===t?'on':'')+'" onclick="recGo(\''+t+'\')">'+names[t]+'</button>';}).join('');
+  var head='<div class="rec-back" onclick="go(\'candidates\')">‹ Candidates</div>'
+    +'<div class="rec-head"><div class="who"><div class="ava" style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--ind));color:#fff;font-weight:700;font-size:18px">'+initials(c.name)+'</div></div>'
+    +'<div class="rec-id"><h2>'+c.name+'</h2><div class="meta">'+c.role+' · '+c.loc+'</div>'
+    +'<div class="rec-facts"><div><span>Match</span><b>'+c.score+' · '+(c.band==='strong'?'Strong':'Possible')+'</b></div><div><span>Comp</span><b>'+c.comp+'</b></div><div><span>Availability</span><b>'+c.avail+'</b></div><div><span>Source</span><b>'+c.src+'</b></div><div><span>Status</span><b>'+pill(c.status)+'</b></div></div></div>'
+    +'<div><div class="rec-actions"><span class="verchip">✓ verified 2d ago</span></div><div class="rec-actions" style="margin-top:12px"><button class="btn pri sm" onclick="openSubmittal('+c.id+')">Submit to client</button></div><div class="rec-actions" style="margin-top:8px"><button class="btn sm" onclick="toast(\'✦ Opened in Teams\')">Message</button><button class="btn sm" onclick="toast(\'✦ Scheduling link sent\')">Schedule</button></div></div></div>'
+    +'<div class="rec-tabs">'+tb+'</div>';
+  var body;
+  if(recTab==='communication'){
+    body='<div class="rec-cols"><div class="card"><div class="h"><h3>With the candidate</h3><span class="more">Teams · email · SMS</span></div><div class="b feed">'
+      +comm('Interview booked','calendar hold + join link','Teams')+comm('Thank-you note','sent by Caliber after the call','Email')+comm('Profile confirmation','self-service link — verified','Email/SMS')+comm('Right-to-represent','e-signed before submittal','e-sign')+comm('Status update','“you’re submitted to Acme”','SMS')+'</div></div>'
+      +'<div class="card"><div class="h"><h3>With the client</h3><span class="more">Teams · portal</span></div><div class="b feed">'
+      +comm('Shortlist shared','Acme — in their Teams','Teams')+comm('Submittal sent','full package + rationale','Portal')+comm('Interest shared','one tap → lead created','Portal')+'</div></div></div>';
+  } else if(recTab==='submittals'){
+    var sent=['sub','intv','placed'].indexOf(c.status)>=0;
+    body='<div class="card"><div class="h"><h3>Submittals</h3></div><div class="b">'+(sent
+      ?'<div class="att" style="border-color:var(--line)"><span class="ic m">✓</span><div class="x"><div class="t">Acme Robotics · Sr Platform Engineer</div><div class="s">Submitted · client reviewing · pipeline +$48k</div></div><span class="tm" style="color:var(--t4);font-family:var(--mono)">2h ago</span></div>'
+      :'<p style="color:var(--t3);font-size:13.5px;margin:0 0 14px">No submittals yet. Caliber has the package ready — profile, match rationale, e-signed consent, and a clean résumé.</p>')
+      +'<button class="btn pri" style="margin-top:6px" onclick="openSubmittal('+c.id+')">'+(sent?'Submit to another client':'Submit to client')+'</button></div></div>';
+  } else if(recTab==='activity'){
+    body='<div class="card"><div class="h"><h3>Activity</h3></div><div class="b feed">'
+      +'<div class="it"><span class="dot"></span><div><b>Caliber</b> built this profile from the interview transcript</div><span class="tm">2h</span></div>'
+      +'<div class="it"><span class="dot"></span><div><b>Verified</b> via self-service portal — availability & comp confirmed</div><span class="tm">2d</span></div>'
+      +'<div class="it"><span class="dot"></span><div><b>Sourced</b> — '+c.src+'</div><span class="tm">5d</span></div>'
+      +(['sub','intv','placed'].indexOf(c.status)>=0?'<div class="it"><span class="dot"></span><div><b>Submitted</b> to Acme Robotics · client notified</div><span class="tm">2h</span></div>':'')+'</div></div>';
+  } else {
+    body='<div class="rec-cols"><div class="card"><div class="h"><h3>Caliber profile</h3><span class="more">'+c.src+'</span></div><div class="b"><div class="doc" style="margin-top:0"><div class="r"><span>Skills</span><b>'+c.skills.join(' · ')+'</b></div><div class="r"><span>Target role</span><b>'+c.role+'</b></div><div class="r"><span>Location</span><b>'+c.loc+'</b></div><div class="r"><span>Comp</span><b>'+c.comp+'</b></div></div><div class="doc"><h4>Highlight</h4><ul>'+c.hi.map(function(h){return '<li>'+h+'</li>';}).join('')+'</ul></div></div></div>'
+      +'<div class="card"><div class="h"><h3>Why this match</h3><span class="more">tested code</span></div><div class="b">'+c.comps.map(function(m){return '<div class="comp"><div class="cl"><span>'+m[0]+'</span><b>'+m[1]+'%</b></div><div class="bar2"><i style="width:'+m[1]+'%"></i></div><div style="color:var(--t4);font-size:11px;margin-top:3px">'+m[2]+'</div></div>';}).join('')+'</div></div></div>';
+  }
+  return head+'<div class="rec-main">'+body+'</div>';
+};
+
+/* ---------- router ---------- */
+var TITLES={dashboard:['Dashboard','Tuesday · your desk at a glance'],candidates:['Candidates','Caliber-built profiles, ranked by match'],jobs:['Job Orders','Radar keeps every order current'],assignments:['Assignments','Relay manages the lifecycle'],channels:['Channels','Staffing OS, native in Teams & Slack'],lifecycle:['Lifecycle','How candidates connect, get captured, and stay current'],revenue:['Revenue','Pipeline, forecast and GP — the revenue engine'],activity:['Activity','Pulse · for ICs and leadership'],clients:['Clients','Client portals and sales leads']};
+function go(v){
+  document.querySelectorAll('.nav').forEach(function(n){n.classList.toggle('on',n.dataset.v===v);});
+  var t=TITLES[v]||['',''];
+  if(v==='record'){var c=DATA.candidates.find(function(x){return x.id===curCand;});if(c)t=[c.name,c.role+' · '+c.loc];}
+  document.getElementById('pgTitle').textContent=t[0];
+  document.getElementById('pgSub').textContent=t[1];
+  document.getElementById('view').innerHTML='<div class="fade">'+V[v]()+'</div>';
+  document.getElementById('view').scrollTop=0;
+}
+document.querySelectorAll('.nav').forEach(function(n){n.onclick=function(){go(n.dataset.v);};});
+
+/* ---------- candidate drawer ---------- */
+function openCand(id){
+  curCand=id;recTab='overview';go('record');return;
+  var c=DATA.candidates.find(function(x){return x.id===id;});if(!c)return;
+  var d=document.getElementById('drawer');
+  d.innerHTML='<div class="dh"><div class="ava" style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--ind));color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;font-weight:700">'+initials(c.name)+'</div>'
+    +'<div><div style="font-weight:700;font-size:16px">'+c.name+'</div><div class="mt" style="color:var(--t3);font-size:12.5px">'+c.role+' · '+c.loc+'</div></div>'
+    +'<button class="x" onclick="closeDrawer()">✕</button></div>'
+    +'<div class="db">'
+    +'<div style="display:flex;gap:18px;align-items:center;margin-bottom:6px">'+ring(c.score).replace('width:34px;height:34px','width:54px;height:54px').replace('width:26px;height:26px','width:42px;height:42px').replace('font-size:11px','font-size:15px')
+    +'<div><div style="font-weight:700">Match '+c.score+' · '+(c.band==='strong'?'Strong':'Possible')+'</div><div class="mt" style="color:var(--t3);font-size:12.5px">for Sr Platform Engineer · Acme Robotics</div></div></div>'
+    +'<div class="sect" style="margin-top:18px">Why this score</div>'+c.comps.map(function(m){return '<div class="comp"><div class="cl"><span>'+m[0]+'</span><b>'+m[1]+'%</b></div><div class="bar2"><i style="width:'+m[1]+'%"></i></div><div class="mt" style="color:var(--t4);font-size:11px;margin-top:3px">'+m[2]+'</div></div>';}).join('')
+    +'<div class="doc"><h4>Caliber profile</h4><div class="r"><span>Skills</span><b>'+c.skills.join(' · ')+'</b></div><div class="r"><span>Availability</span><b>'+c.avail+'</b></div><div class="r"><span>Comp</span><b>'+c.comp+'</b></div><div class="r"><span>Source</span><b>'+c.src+'</b></div></div>'
+    +'<div class="doc"><h4>Highlight</h4><ul>'+c.hi.map(function(h){return '<li>'+h+'</li>';}).join('')+'</ul></div>'
+    +'</div>'
+    +'<div class="da"><button class="btn pri" onclick="closeDrawer();openSubmittal('+c.id+')">Submit to client</button><button class="btn" onclick="toast(\'✓ Written to \'+ENV)">Write to ATS</button><button class="btn" onclick="toast(\'✦ Opened in Teams chat\')">Message in Teams</button></div>';
+  d.classList.add('on');document.getElementById('scrim').classList.add('on');
+}
+function closeDrawer(){document.getElementById('drawer').classList.remove('on');document.getElementById('scrim').classList.remove('on');}
+document.getElementById('scrim').onclick=closeDrawer;
+
+/* ---------- interactions ---------- */
+var ENV='Bullhorn';
+document.getElementById('envChip').onclick=function(){ENV=ENV==='Bullhorn'?'Salesforce':'Bullhorn';this.innerHTML='<span class="d"></span>'+ENV;toast('Connected ATS → '+ENV);};
+function fixJob(i){DATA.jobs[i].stale=false;DATA.jobs[i].set=true;document.getElementById('jobBody').innerHTML=jobRows();toast('✓ '+DATA.jobs[i].t+' marked Open in '+ENV);}
+function fixAsg(i){DATA.assignments[i].done=true;go('assignments');toast('✓ '+DATA.assignments[i].next+' — handled');}
+function clientInterest(ci,i){DATA.clients[ci].list[i].set=true;DATA.clients[ci].leads=(DATA.clients[ci].leads||0)+1;go('clients');toast('★ Interest shared · lead created for sales · recruiter pinged in Teams');}
+function runCaliber(){toast('✦ Caliber is profiling the latest interview…');setTimeout(function(){toast('✓ New profile added — match 88, ready to review');},1400);}
+var T;function toast(m){var t=document.getElementById('toast');t.innerHTML=m.replace('✓','<span class="k">✓</span>');t.classList.add('on');clearTimeout(T);T=setTimeout(function(){t.classList.remove('on');},2600);}
+
+/* ---------- feature spotlight (zoom callouts) ---------- */
+var SPOT=(function(){
+  var TOUR=[
+    {view:'dashboard',k:'Your command center',t:'The whole desk, at a glance',b:'KPIs, what needs you next, and live activity — the second you open Staffing OS inside Teams.',sel:function(){return document.querySelector('.kpis');}},
+    {view:'dashboard',k:'AI triage',t:'It tells you what matters first',b:'Caliber, Radar and Relay surface the few things that need a human — each one a click from done.',sel:function(){return document.querySelectorAll('.att')[0];}},
+    {view:'candidates',k:'Explainable match',t:'Scores you can defend',b:'Every match is computed by tested code and shows its work — never a black-box guess.',sel:function(){return document.querySelector('.tbl tbody .ring');}},
+    {view:'record',pre:function(){curCand=1;recTab='overview';},k:'The living record',t:'Open anyone — it’s all here',b:'Each candidate is a real record: the AI-built profile, the score math, the source, who they’ve talked to, and one-click submit.',sel:function(){return document.querySelector('.rec-cols');}},
+    {view:'jobs',pre:function(){closeDrawer();},k:'Radar',t:'Nothing goes stale',b:'Radar flags job orders with no recent update and fixes the status — without leaving Teams.',sel:function(){return document.querySelector('#jobBody .pill.stale');}},
+    {view:'clients',k:'Client portal → leads',t:'Interest becomes revenue',b:'Clients review the shortlist in their own Teams. One tap of Interested creates a tracked sales lead.',sel:function(){return document.querySelector('.clientcard .go');}},
+    {view:'channels',k:'Lives where you work',t:'Native in Teams and Slack',b:'Every agent posts and acts inside your channels with adaptive cards — recruiters never open another tab. Same agents, both surfaces.',sel:function(){return document.querySelector('.acard');}},
+    {view:'revenue',k:'A revenue machine',t:'Signals become dollars',b:'Client interest becomes qualified leads, submittals and placements — tracked to pipeline, forecast and gross profit.',sel:function(){return document.querySelector('.kpis');}},
+    {view:'record',pre:function(){curCand=1;recTab='communication';},k:'Source, freshness, every message',t:'The full story, on the record',b:'Where the data came from, when it was last verified, and the entire candidate + client conversation — all in one place.',sel:function(){return document.querySelector('.rec-cols');}},
+  ];
+  var scrim,callout,skip,intro,clone,i=0;
+  function mk(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;document.body.appendChild(e);return e;}
+  function build(){
+    scrim=mk('div','spot-scrim');
+    skip=mk('button','spot-skip','✕ Skip tour');skip.onclick=end;
+    callout=mk('div','spot-callout');
+    intro=mk('div','spot-intro','<div class="c"><div class="wm"><span class="g">g</span>.AI</div><div class="k">Introducing</div><h2>Staffing OS</h2><p>The AI staffing platform that lives inside Microsoft Teams. Here are the moments that matter — in 30 seconds.</p><button class="go" id="spotGo">See what’s new →</button></div>');
+    intro.querySelector('#spotGo').onclick=function(){intro.classList.remove('on');setTimeout(function(){intro.style.display='none';run(0);},460);};
+  }
+  function clearClone(){if(clone){clone.remove();clone=null;}}
+  function run(n){
+    i=n;var s=TOUR[i];if(s.pre)s.pre();go(s.view);
+    setTimeout(function(){
+      var target=s.sel();if(!target){next();return;}
+      var r=target.getBoundingClientRect();clearClone();
+      clone=document.createElement('div');clone.className='spot-clone';
+      clone.style.left=r.left+'px';clone.style.top=r.top+'px';clone.style.width=r.width+'px';clone.style.minHeight=r.height+'px';
+      var inner=target.cloneNode(true);inner.style.margin='0';inner.style.width='100%';clone.appendChild(inner);document.body.appendChild(clone);
+      scrim.classList.add('on');skip.classList.add('on');
+      var big=r.width>460?1.12:1.34, cx=r.left+r.width/2, cy=r.top+r.height/2;
+      var dx=(innerWidth/2-cx)*0.32, dy=(innerHeight/2-cy)*0.32;
+      requestAnimationFrame(function(){clone.classList.add('on');clone.style.transform='translate('+dx+'px,'+dy+'px) scale('+big+')';});
+      var cw=312, left=cx<innerWidth/2?innerWidth-cw-30:30, top=Math.max(80,Math.min(innerHeight-230,cy-90));
+      callout.style.left=left+'px';callout.style.top=top+'px';
+      callout.innerHTML='<div class="k">'+s.k+'</div><h4>'+s.t+'</h4><p>'+s.b+'</p><div class="rw"><div class="dts">'+TOUR.map(function(_,m){return '<i class="'+(m===i?'on':'')+'"></i>';}).join('')+'</div><button class="nx">'+(i===TOUR.length-1?'Done':'Next →')+'</button></div>';
+      callout.querySelector('.nx').onclick=next;
+      requestAnimationFrame(function(){callout.classList.add('on');});
+    }, s.pre?440:280);
+  }
+  function next(){callout.classList.remove('on');if(clone){clone.style.transform='';clone.classList.remove('on');}setTimeout(function(){clearClone();if(i<TOUR.length-1)run(i+1);else end();},380);}
+  function end(){callout.classList.remove('on');skip.classList.remove('on');scrim.classList.remove('on');clearClone();closeDrawer();}
+  function start(){if(!scrim)build();intro.style.display='';requestAnimationFrame(function(){intro.classList.add('on');});}
+  return {start:start};
+})();
+document.getElementById('tourBtn').onclick=function(e){e.preventDefault();SPOT.start();};
+
+go('dashboard');
+</script>
+</body>
+</html>

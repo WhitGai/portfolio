@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Staffing OS — the candidate experience</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#031421; --ink:#e9f6ff; --t2:#a4c6d8; --t3:#5e8298;
+  --mag:#13b6a8; --mag2:#34e3d2; --indigo:#37c6ff; --mint:#34e3d2; --peach:#ffcf6b;
+  --card:#ffffff; --cink:#0c1e2b; --ct2:#5a7488; --cline:#e7eef3; --cbg:#f4f9fc;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t2);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.6}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(50% 40% at 80% 6%,rgba(52,227,210,.16),transparent 70%),
+  radial-gradient(46% 38% at 8% 30%,rgba(92,200,255,.13),transparent 70%),
+  radial-gradient(40% 34% at 60% 96%,rgba(55,198,255,.09),transparent 70%)}
+a{color:var(--ink);text-decoration:none}
+.grad{background:linear-gradient(100deg,var(--mag2),var(--mag) 55%,var(--indigo));-webkit-background-clip:text;background-clip:text;color:transparent}
+.exit{position:fixed;top:14px;left:16px;z-index:20;font-size:12px;font-family:var(--sans);color:var(--t3);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:7px 13px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:72px 28px 80px;display:grid;grid-template-columns:1fr 380px;gap:54px;align-items:start}
+@media(max-width:1000px){.wrap{grid-template-columns:1fr;gap:44px;justify-items:center;padding-top:54px}.copy{order:2;max-width:640px}.phonecol{order:1}}
+
+/* copy side */
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mag2);background:rgba(52,227,210,.1);border:1px solid rgba(52,227,210,.25);border-radius:999px;padding:7px 14px;margin-bottom:24px}
+h1{margin:0 0 18px;font-size:clamp(34px,4.6vw,52px);font-weight:900;letter-spacing:-.035em;line-height:1.04;color:var(--ink)}
+.lede{font-size:clamp(17px,1.9vw,20px);color:var(--t2);max-width:54ch;line-height:1.55}
+.lede b{color:var(--ink);font-weight:600}
+.notbull{margin:24px 0 8px;font-size:14px;color:var(--t3);font-weight:600;border-left:2px solid var(--mag);padding-left:14px;line-height:1.5}
+.notbull b{color:var(--ink)}
+
+.h2{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin:48px 0 18px}
+.probs{display:grid;gap:12px}
+.prob{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px 20px}
+.prob .x{flex:0 0 auto;width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:18px}
+.prob .b{flex:1}
+.prob .was{font-size:12.5px;color:var(--t3);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.25)}
+.prob .now{font-size:15.5px;color:var(--ink);font-weight:600;margin-top:2px}
+.prob .now span{color:var(--mag2)}
+
+/* flywheel */
+.fly{background:linear-gradient(180deg,rgba(52,227,210,.08),rgba(55,198,255,.05));border:1px solid rgba(52,227,210,.2);border-radius:20px;padding:24px;margin-top:18px}
+.fly .step{display:flex;align-items:center;gap:13px;padding:9px 0}
+.fly .n{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--mag2),var(--indigo));color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.fly .s{font-size:14.5px;color:var(--ink);font-weight:500}
+.fly .s b{font-weight:700}
+.fly .punch{font-size:16px;font-weight:700;color:var(--ink);margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}
+.fly .punch .grad{font-weight:800}
+
+/* phone */
+.phonecol{position:sticky;top:40px}
+@media(max-width:1000px){.phonecol{position:static}}
+.phone{width:360px;max-width:90vw;height:740px;background:#111016;border-radius:46px;padding:13px;box-shadow:0 50px 120px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.06),inset 0 0 0 2px rgba(255,255,255,.04);position:relative}
+.notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#111016;border-radius:0 0 16px 16px;z-index:5}
+.screen{height:100%;background:var(--cbg);border-radius:34px;overflow:hidden;display:flex;flex-direction:column;position:relative;color:var(--cink)}
+.statusbar{height:40px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 6px;font-size:12px;font-weight:600;color:var(--cink)}
+.appbar{padding:8px 20px 12px;display:flex;align-items:center;gap:10px}
+.appbar .logo{font-weight:900;font-size:17px;letter-spacing:-.04em;color:var(--cink)}
+.appbar .logo .g{color:var(--mag)}
+.appbar .me{margin-left:auto;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--mag),var(--indigo));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.body{flex:1;overflow-y:auto;padding:6px 16px 16px}
+.body::-webkit-scrollbar{display:none}
+.scr{display:none;animation:sf .3s ease}
+.scr.on{display:block}
+@keyframes sf{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.hi{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:6px 0 2px;color:var(--cink)}
+.hi-sub{font-size:13px;color:var(--ct2);margin-bottom:16px}
+.ccard{background:var(--card);border:1px solid var(--cline);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 6px 20px -12px rgba(20,10,30,.25)}
+.ccard.accent{background:linear-gradient(140deg,#fff,#fef0f8);border-color:#f8d6ea}
+.ccard .lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mag);margin-bottom:8px}
+.ccard .q{font-size:17px;font-weight:700;color:var(--cink);line-height:1.3}
+.ccard .qs{font-size:13px;color:var(--ct2);margin-top:4px}
+.cbtns{display:flex;gap:9px;margin-top:14px}
+.cbtn{flex:1;font-size:14px;font-weight:700;border-radius:13px;padding:12px;cursor:pointer;border:0;font-family:var(--sans)}
+.cbtn.p{background:var(--mag);color:#fff}
+.cbtn.g{background:#f1eef4;color:var(--cink)}
+.done{display:flex;align-items:center;gap:10px;color:var(--mint);font-weight:700;font-size:15px}
+.done .ck{width:26px;height:26px;border-radius:50%;background:#e3f8f1;color:var(--mint);display:flex;align-items:center;justify-content:center;font-size:13px}
+.micro{font-size:12px;color:var(--ct2);margin-top:8px}
+
+.peek{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--cline);border-radius:18px;padding:14px;margin-bottom:12px;cursor:pointer}
+.peek .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+.peek .ic.a{background:#eeecff;color:var(--indigo)}.peek .ic.b{background:#fdeef6;color:var(--mag)}
+.peek .pb{flex:1;min-width:0}
+.peek .pt{font-weight:700;font-size:14.5px;color:var(--cink)}
+.peek .ps{font-size:12.5px;color:var(--ct2);margin-top:1px}
+.peek .ar{color:var(--ct2);font-size:18px}
+
+.scr h3{font-size:20px;font-weight:800;letter-spacing:-.02em;margin:6px 0 3px;color:var(--cink)}
+.scr .h3s{font-size:13px;color:var(--ct2);margin-bottom:16px}
+.track{background:var(--card);border:1px solid var(--cline);border-radius:20px;padding:18px;margin-bottom:14px}
+.track .tt{font-weight:800;font-size:15px;color:var(--cink)}
+.track .tr{font-size:12px;color:var(--ct2);margin:2px 0 14px}
+.steps{position:relative;padding-left:6px}
+.stp{display:flex;gap:13px;padding-bottom:16px;position:relative}
+.stp:last-child{padding-bottom:0}
+.stp::before{content:"";position:absolute;left:9px;top:22px;bottom:-2px;width:2px;background:#eee}
+.stp:last-child::before{display:none}
+.stp .dot{width:20px;height:20px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:10px;z-index:1}
+.stp.done .dot{background:var(--mint);color:#fff}
+.stp.now .dot{background:var(--mag);color:#fff;box-shadow:0 0 0 4px rgba(52,227,210,.18)}
+.stp.next .dot{background:#fff;border:2px solid #e3e0e8;color:#bbb}
+.stp .sl{font-size:14px;font-weight:600;color:var(--cink)}
+.stp.next .sl{color:#aaa6b0}
+.stp .sd{font-size:12px;color:var(--ct2)}
+
+.match{background:var(--card);border:1px solid var(--cline);border-radius:20px;padding:18px;margin-bottom:13px}
+.match .mh{display:flex;align-items:flex-start;gap:12px}
+.match .fit{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#fdeef6,#eeecff);color:var(--mag);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.match .mt{font-weight:800;font-size:15.5px;color:var(--cink)}
+.match .ms{font-size:12.5px;color:var(--ct2);margin-top:2px}
+.match .why{font-size:13px;color:var(--ct2);margin:12px 0;line-height:1.45;background:var(--cbg);border-radius:12px;padding:10px 12px}
+.match .why b{color:var(--cink)}
+.rep{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.rep .rl{font-size:13px;font-weight:600;color:var(--cink)}
+.tog{width:48px;height:28px;border-radius:999px;background:#e6e2ec;position:relative;cursor:pointer;transition:.2s;flex:0 0 auto}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog.on{background:var(--mag)}.tog.on::after{left:23px}
+
+.you-prof{background:linear-gradient(140deg,#fff,#f6f3fb);border:1px solid var(--cline);border-radius:20px;padding:18px;margin-bottom:14px}
+.you-prof .nm{font-weight:800;font-size:18px;color:var(--cink)}
+.you-prof .rl2{font-size:13px;color:var(--ct2);margin-top:1px}
+.you-prof .built{font-size:12px;color:var(--mint);font-weight:600;margin-top:10px;display:flex;align-items:center;gap:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{font-size:11.5px;background:#f1eef4;color:var(--cink);border-radius:8px;padding:4px 9px;font-weight:500}
+.own{background:var(--card);border:1px solid var(--cline);border-radius:20px;padding:18px;margin-bottom:14px}
+.own .ot{font-weight:800;font-size:15px;color:var(--cink);display:flex;align-items:center;gap:8px}
+.own .od{font-size:12.5px;color:var(--ct2);margin:4px 0 14px}
+.grant{display:flex;align-items:center;gap:11px;padding:11px 0;border-top:1px solid var(--cline)}
+.grant .gv{width:34px;height:34px;border-radius:10px;background:#eeecff;color:var(--indigo);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.grant .gb{flex:1}.grant .gn{font-size:13.5px;font-weight:600;color:var(--cink)}.grant .gs{font-size:11.5px;color:var(--ct2)}
+.grant .gx{font-size:11px;color:var(--mag);font-weight:600;cursor:pointer}
+
+/* tab bar */
+.tabbar{display:flex;background:#fff;border-top:1px solid var(--cline);padding:8px 12px 18px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:#b3aebd;cursor:pointer;padding:5px 0}
+.tab .ti{font-size:18px;line-height:1}
+.tab.on{color:var(--mag)}
+
+.ptoast{position:absolute;left:16px;right:16px;bottom:84px;background:var(--cink);color:#fff;border-radius:14px;padding:12px 16px;font-size:13px;font-weight:500;text-align:center;opacity:0;transform:translateY(12px);transition:.3s;z-index:8}
+.ptoast.on{opacity:1;transform:none}
+.ptoast b{color:#7fe3b6}
+</style>
+</head>
+<body>
+<a class="exit" href="staffing-os.html">‹ Staffing OS</a>
+<div class="wrap">
+  <div class="copy">
+    <span class="kicker">Staffing, flipped</span>
+    <h1>The candidate owns the experience.<br>So the best talent <span class="grad">comes to you.</span></h1>
+    <p class="lede">Every staffing platform is built for the recruiter and treats candidates as rows in a database. We built the candidate a home they actually love — and <b>that</b> is exactly why your data stays true and your firm wins the talent.</p>
+    <p class="notbull">This isn't a better system of record. <b>The candidate is the system.</b> →</p>
+
+    <div class="h2">The problems we actually solve</div>
+    <div class="probs">
+      <div class="prob"><div class="x">🕳️</div><div class="b"><div class="was">Apply → silence. The black hole.</div><div class="now">Live status on every process. <span>No ghosting, ever.</span></div></div></div>
+      <div class="prob"><div class="x">🔁</div><div class="b"><div class="was">Re-enter your whole life for every recruiter.</div><div class="now">One profile you own — <span>built in 2 minutes.</span></div></div></div>
+      <div class="prob"><div class="x">🔒</div><div class="b"><div class="was">Your data sits in 40 ATSs you can't see.</div><div class="now">You decide who represents you, <span>for what. Revoke anytime.</span></div></div></div>
+      <div class="prob"><div class="x">💬</div><div class="b"><div class="was">Treated like a number, no feedback.</div><div class="now">Real matches, real feedback, <span>a recruiter who knows you.</span></div></div></div>
+    </div>
+
+    <div class="h2">The recruiter's realized value — the flywheel</div>
+    <div class="fly">
+      <div class="step"><span class="n">1</span><span class="s">A candidate experience they <b>love</b></span></div>
+      <div class="step"><span class="n">2</span><span class="s">Talent opts in &amp; <b>keeps their own data current</b></span></div>
+      <div class="step"><span class="n">3</span><span class="s">Your database is <b>always true &amp; warm</b> — zero data rot</span></div>
+      <div class="step"><span class="n">4</span><span class="s">You submit faster, place more, <b>win the talent war</b></span></div>
+      <div class="step"><span class="n">5</span><span class="s">More talent wants in → the network compounds</span></div>
+      <div class="punch">Your competitors have a database. You have a <span class="grad">living talent network.</span></div>
+    </div>
+  </div>
+
+  <!-- PHONE -->
+  <div class="phonecol">
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="statusbar"><span>9:41</span><span>● ● ● &nbsp;✦</span></div>
+        <div class="appbar"><span class="logo"><span class="g">g</span>.AI</span><span style="font-size:12px;color:var(--ct2);font-weight:600">talent</span><span class="me">DW</span></div>
+        <div class="body">
+          <!-- HOME -->
+          <div class="scr on" id="s-home">
+            <div class="hi">Hi, Dana 👋</div>
+            <div class="hi-sub">Senior Platform Engineer · open to remote</div>
+            <div class="ccard accent" id="freshCard">
+              <div class="lbl">30-second check-in</div>
+              <div class="q">Still open to new roles?</div>
+              <div class="qs">And still targeting around $165k?</div>
+              <div class="cbtns"><button class="cbtn p" onclick="confirmFresh()">Yes, I'm open</button><button class="cbtn g" onclick="ptoast('Got it — paused for now.')">Not right now</button></div>
+            </div>
+            <div class="peek" onclick="setTab('track')"><div class="ic a">📍</div><div class="pb"><div class="pt">Where you stand</div><div class="ps">Acme Robotics · interview Thursday</div></div><span class="ar">›</span></div>
+            <div class="peek" onclick="setTab('matches')"><div class="ic b">✨</div><div class="pb"><div class="pt">Picked for you</div><div class="ps">2 new roles that fit your stack</div></div><span class="ar">›</span></div>
+          </div>
+          <!-- TRACK -->
+          <div class="scr" id="s-track">
+            <h3>Where you stand</h3><div class="h3s">No black holes. You see every step in real time.</div>
+            <div class="track">
+              <div class="tt">Senior Platform Engineer</div><div class="tr">Acme Robotics · with Sam at TalentCo</div>
+              <div class="steps">
+                <div class="stp done"><span class="dot">✓</span><div><div class="sl">Submitted</div><div class="sd">Mon · profile shared with the client</div></div></div>
+                <div class="stp done"><span class="dot">✓</span><div><div class="sl">Client reviewing</div><div class="sd">Tue · Acme liked your IaC work</div></div></div>
+                <div class="stp now"><span class="dot">●</span><div><div class="sl">Interview</div><div class="sd">Thursday 2:00pm · join link sent</div></div></div>
+                <div class="stp next"><span class="dot"></span><div><div class="sl">Decision</div><div class="sd">you'll know either way — promise</div></div></div>
+              </div>
+            </div>
+            <div class="track">
+              <div class="tt">Platform Engineer</div><div class="tr">Globex · with Sam</div>
+              <div class="steps">
+                <div class="stp done"><span class="dot">✓</span><div><div class="sl">Submitted</div><div class="sd">Wed</div></div></div>
+                <div class="stp now"><span class="dot">●</span><div><div class="sl">Client reviewing</div><div class="sd">we'll ping you the moment it moves</div></div></div>
+              </div>
+            </div>
+          </div>
+          <!-- MATCHES -->
+          <div class="scr" id="s-matches">
+            <h3>Picked for you</h3><div class="h3s">Real fits — you choose who gets to represent you.</div>
+            <div class="match">
+              <div class="mh"><div class="fit">94</div><div><div class="mt">Staff Platform Engineer</div><div class="ms">Fintech · remote · $175–195k</div></div></div>
+              <div class="why">Why you: <b>your exact stack</b> (AWS · K8s · Terraform), remote, and comp lands above your target.</div>
+              <div class="rep"><span class="rl">Represent me for this</span><div class="tog" id="t1" onclick="rep(this,'You\\'re in — Sam will reach out.')"></div></div>
+            </div>
+            <div class="match">
+              <div class="mh"><div class="fit">88</div><div><div class="mt">Infrastructure Lead</div><div class="ms">Health-tech · hybrid · $180k</div></div></div>
+              <div class="why">Why you: leadership-ready, strong on reliability. Hybrid in your metro.</div>
+              <div class="rep"><span class="rl">Represent me for this</span><div class="tog" id="t2" onclick="rep(this,'Done — you\\'re in for this role.')"></div></div>
+            </div>
+          </div>
+          <!-- YOU -->
+          <div class="scr" id="s-you">
+            <h3>Your profile</h3><div class="h3s">You own it. We just did the typing.</div>
+            <div class="you-prof">
+              <div class="nm">Dana Whitfield</div><div class="rl2">Senior Platform Engineer · San Diego · remote</div>
+              <div class="built">✓ Built from your interview in 2 minutes — you confirmed it</div>
+              <div class="chips"><span class="chip">AWS</span><span class="chip">Kubernetes</span><span class="chip">Terraform</span><span class="chip">Python</span><span class="chip">~$165k</span><span class="chip">Available ~4 wks</span></div>
+            </div>
+            <div class="own">
+              <div class="ot">🔒 You own your data</div>
+              <div class="od">See exactly who can represent you, and for what. Revoke or export anytime.</div>
+              <div class="grant"><div class="gv">TC</div><div class="gb"><div class="gn">Sam · TalentCo</div><div class="gs">Platform &amp; Infra roles · granted Mon</div></div><span class="gx" onclick="ptoast('Access revoked.')">Revoke</span></div>
+              <div class="grant"><div class="gv">⤓</div><div class="gb"><div class="gn">Export my data</div><div class="gs">take your profile anywhere</div></div><span class="gx" onclick="ptoast('Export sent to your email.')">Export</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="ptoast" id="ptoast"></div>
+        <div class="tabbar">
+          <div class="tab on" data-t="home" onclick="setTab('home')"><span class="ti">🏠</span>Home</div>
+          <div class="tab" data-t="track" onclick="setTab('track')"><span class="ti">📍</span>Track</div>
+          <div class="tab" data-t="matches" onclick="setTab('matches')"><span class="ti">✨</span>Matches</div>
+          <div class="tab" data-t="you" onclick="setTab('you')"><span class="ti">👤</span>You</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function setTab(t){
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.toggle('on',s.id==='s-'+t);});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.t===t);});
+  document.querySelector('.body').scrollTop=0;
+}
+var T;function ptoast(m){var e=document.getElementById('ptoast');e.innerHTML=m;e.classList.add('on');clearTimeout(T);T=setTimeout(function(){e.classList.remove('on');},2400);}
+function confirmFresh(){
+  document.getElementById('freshCard').innerHTML='<div class="done"><span class="ck">✓</span>You’re up to date</div><div class="micro">Thanks, Dana. <b style="color:var(--mag)">Sam sees this instantly</b> — your recruiter always has the real you.</div>';
+  ptoast('✓ Updated — your recruiter just saw it');
+}
+function rep(el,msg){el.classList.toggle('on');if(el.classList.contains('on'))ptoast('✓ '+msg);}
+</script>
+</body>
+</html>

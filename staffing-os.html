@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Staffing OS — your database, finally true</title>
+<meta name="description" content="The candidate owns a verified profile. Your ATS stays self-cleaning. Something Bullhorn + Copilot structurally cannot be."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --abyss:#02101e; --deep:#063049; --ocean:#0a557a; --teal:#13b6a8; --aqua:#34e3d2; --sky:#5cc8ff; --foam:#eafdfb;
+  --ink:#e9f6ff; --t2:#a4c6d8; --t3:#5e8298; --t4:#3f5e72;
+  --line:rgba(160,220,255,.14); --line2:rgba(160,220,255,.26);
+  --glass:rgba(255,255,255,.055); --glass2:rgba(255,255,255,.085);
+  --grad:linear-gradient(118deg,#34e3d2 0%,#37c6ff 60%,#6aa7ff 100%);
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--t2);font-family:var(--sans);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background:
+   radial-gradient(120% 80% at 50% -8%, rgba(92,200,255,.20), transparent 55%),
+   radial-gradient(90% 70% at 84% 8%, rgba(52,227,210,.16), transparent 60%),
+   linear-gradient(180deg,#063048 0%,#04243b 30%,#031a2e 60%,#020f1d 100%);
+  background-attachment:fixed}
+/* god rays + currents */
+.sea{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ray{position:absolute;top:-30%;width:220px;height:160%;background:linear-gradient(180deg,rgba(180,240,255,.10),transparent 70%);filter:blur(14px);transform:skewX(-16deg);mix-blend-mode:screen}
+.r1{left:18%;animation:sway 13s ease-in-out infinite}.r2{left:46%;width:300px;opacity:.7;animation:sway 17s ease-in-out infinite reverse}.r3{left:74%;width:180px;animation:sway 15s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:skewX(-16deg) translateX(0)}50%{transform:skewX(-13deg) translateX(26px)}}
+.cur{position:absolute;border-radius:50%;filter:blur(80px);mix-blend-mode:screen;animation:drift 26s ease-in-out infinite}
+.c1{width:46vw;height:46vw;left:54%;top:24%;background:radial-gradient(circle,rgba(52,227,210,.22),transparent 62%)}
+.c2{width:40vw;height:40vw;left:-6%;top:50%;background:radial-gradient(circle,rgba(55,198,255,.18),transparent 62%);animation-delay:-9s}
+.c3{width:30vw;height:30vw;left:30%;top:78%;background:radial-gradient(circle,rgba(106,167,255,.14),transparent 64%);animation-delay:-16s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(4%,-3%) scale(1.1)}}
+@media(prefers-reduced-motion:reduce){.ray,.cur{animation:none}}
+.wrap{max-width:1080px;margin:0 auto;padding:0 36px;position:relative;z-index:2}
+@media(max-width:600px){.wrap{padding:0 22px}}
+a{color:var(--aqua);text-decoration:none}
+h1,h2,h3{margin:0;color:var(--ink);font-weight:700;letter-spacing:-.035em;line-height:1.04}
+.aq{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mono{font-family:var(--mono)}
+::selection{background:var(--aqua);color:#03161a}
+
+/* glass primitives */
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);box-shadow:0 26px 60px -28px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.14)}
+
+/* nav */
+nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(16px) saturate(1.3);background:rgba(4,28,46,.5);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--ink)}
+.brand .drop{width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(45deg);background:var(--grad);box-shadow:0 0 18px -2px var(--aqua)}
+.mlinks{display:flex;gap:24px;align-items:center}
+.mlinks a{font-size:13.5px;color:var(--t2);font-weight:500}.mlinks a:hover{color:var(--ink)}
+.mcta{background:var(--grad);color:#03161a!important;font-weight:700;padding:9px 16px;border-radius:11px;font-size:13.5px;box-shadow:0 10px 26px -10px rgba(52,227,210,.7)}
+@media(max-width:740px){.mlinks a:not(.mcta){display:none}}
+
+/* hero */
+.hero{padding:110px 0 84px;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--aqua);border:1px solid var(--line2);background:var(--glass);border-radius:999px;padding:7px 15px;margin-bottom:28px;backdrop-filter:blur(10px)}
+.eyebrow .d{width:7px;height:7px;border-radius:50%;background:var(--aqua);box-shadow:0 0 10px var(--aqua)}
+.hero h1{font-size:clamp(42px,7vw,82px);max-width:15ch;margin:0 auto 22px;font-weight:800;letter-spacing:-.04em;text-shadow:0 2px 40px rgba(52,227,210,.18)}
+.hero p{font-size:clamp(17px,2.1vw,21px);max-width:58ch;margin:0 auto 34px;color:var(--t2)}
+.hero p b{color:var(--ink);font-weight:600}
+.cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;padding:13px 24px;border-radius:13px;cursor:pointer;font-family:var(--sans);border:1px solid var(--line2);background:var(--glass);color:var(--ink);transition:.16s;backdrop-filter:blur(10px)}
+.btn:hover{border-color:var(--aqua);box-shadow:0 0 0 1px var(--aqua)}
+.btn.fill{background:var(--grad);color:#03161a;border:0;box-shadow:0 14px 34px -12px rgba(52,227,210,.7)}
+.btn.fill:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.hnote{font-family:var(--mono);font-size:12px;color:var(--t3);margin-top:22px;letter-spacing:.03em}
+
+/* sections */
+section{padding:84px 0}
+.eyl{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--aqua);margin-bottom:16px}
+.h2{font-size:clamp(28px,4.2vw,46px);max-width:20ch;margin-bottom:16px;letter-spacing:-.03em}
+.lead{font-size:19px;line-height:1.6;color:var(--t2);max-width:60ch}
+.lead b{color:var(--ink)}
+.center{text-align:center}.center .h2,.center .lead{margin-left:auto;margin-right:auto}
+
+/* figure cards */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
+@media(max-width:760px){.grid3{grid-template-columns:1fr}}
+.gc{padding:26px}
+.gc .n{font-size:46px;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--ink)}
+.gc .n .u{color:var(--aqua)}
+.gc .l{font-size:14px;color:var(--t2);margin-top:13px;line-height:1.5}
+.gc .s{font-family:var(--mono);font-size:10.5px;color:var(--t3);margin-top:11px;text-transform:uppercase;letter-spacing:.05em}
+
+/* three things */
+.tc{padding:26px}
+.tc .ti{width:42px;height:42px;border-radius:12px;background:rgba(52,227,210,.14);border:1px solid var(--line2);color:var(--aqua);display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:16px;font-family:var(--mono)}
+.tc h3{font-size:20px;margin-bottom:9px}
+.tc p{font-size:14.5px;color:var(--t2);margin:0;line-height:1.6}
+.tc .can{font-size:12.5px;color:var(--aqua);margin-top:15px;padding-top:13px;border-top:1px solid var(--line);font-family:var(--mono)}
+
+/* ledger */
+.ledger{margin-top:42px;overflow:hidden}
+.lrow{display:grid;grid-template-columns:1.3fr 1fr 1fr;align-items:center;border-bottom:1px solid var(--line)}
+.lrow:last-child{border-bottom:0}
+.lrow.h div{padding:15px 18px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--t3)}
+.lrow.h .c{color:var(--aqua)}
+.lrow .k{padding:16px 18px;font-size:15px;color:var(--ink);font-weight:600}
+.lrow .v{padding:16px 18px;font-size:14px;color:var(--t3)}
+.lrow .v.c{color:var(--ink);font-weight:600}
+@media(max-width:680px){.lrow{grid-template-columns:1fr}.lrow .k{padding-bottom:6px}.lrow .v{padding:6px 18px}.lrow.h{display:none}.lrow .v.b::before{content:"BULLHORN+COPILOT — ";font-family:var(--mono);font-size:10px;color:var(--t3)}.lrow .v.c::before{content:"STAFFING OS — ";font-family:var(--mono);font-size:10px;color:var(--aqua)}}
+.aside{margin-top:24px;font-size:16px;color:var(--t2);max-width:64ch;line-height:1.6}.aside b{color:var(--ink)}
+
+/* steps */
+.steps{margin-top:42px}
+.step{display:grid;grid-template-columns:54px 1fr;gap:22px;padding:22px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.step:last-child{border-bottom:0}
+.step .n{font-family:var(--mono);font-size:13px;color:var(--aqua)}
+.step h3{font-size:22px;margin-bottom:6px}
+.step p{font-size:15px;color:var(--t2);margin:0;max-width:64ch;line-height:1.6}
+.punch{font-size:clamp(23px,3.4vw,34px);font-weight:800;color:var(--ink);letter-spacing:-.03em;max-width:24ch;margin-top:44px;line-height:1.18}
+
+/* experience */
+.exp{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
+@media(max-width:820px){.exp{grid-template-columns:1fr}}
+.ec{padding:24px;display:block;transition:.18s}
+.ec:hover{transform:translateY(-3px);border-color:var(--line2)}
+.ec .et{font-family:var(--mono);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
+.ec h3{font-size:21px;margin:11px 0 8px}
+.ec p{font-size:14px;color:var(--t2);margin:0 0 14px;line-height:1.55}
+.ec .go{font-size:13.5px;color:var(--aqua);font-weight:600}
+
+/* pricing */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
+@media(max-width:820px){.tiers{grid-template-columns:1fr}}
+.tier{padding:28px}
+.tier.feat{background:linear-gradient(180deg,rgba(52,227,210,.12),var(--glass));border-color:var(--line2)}
+.tier .tn{font-weight:800;font-size:18px;color:var(--ink)}
+.tier .tp{font-size:36px;font-weight:800;letter-spacing:-.03em;color:var(--ink);margin:12px 0 2px}
+.tier .tp span{font-size:13px;font-weight:500;color:var(--t3)}
+.tier .td{font-size:13px;color:var(--t3);margin-bottom:18px}
+.tier ul{margin:0 0 22px;padding:0;list-style:none}
+.tier li{font-size:13.5px;color:var(--t2);padding:7px 0 7px 22px;position:relative}
+.tier li::before{content:"≈";position:absolute;left:0;color:var(--aqua)}
+.tier .btn{width:100%;justify-content:center}
+
+/* close */
+.close{text-align:center;padding:120px 0}
+.close .eyl{display:inline-block}
+.close h2{font-size:clamp(32px,5.2vw,60px);max-width:18ch;margin:0 auto 28px;letter-spacing:-.035em}
+.close .cta{justify-content:center}
+footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);font-size:11.5px;color:var(--t3);letter-spacing:.03em}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}footer a{color:var(--t2)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(4,28,46,.92);border:1px solid var(--line2);backdrop-filter:blur(10px);color:var(--ink);padding:12px 18px;border-radius:12px;font-size:13.5px;opacity:0;transition:.3s;z-index:60}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}.toast b{color:var(--aqua)}
+</style>
+</head>
+<body>
+<div class="sea"><div class="ray r1"></div><div class="ray r2"></div><div class="ray r3"></div><div class="cur c1"></div><div class="cur c2"></div><div class="cur c3"></div></div>
+
+<nav><div class="wrap">
+  <div class="brand"><span class="drop"></span>Staffing OS</div>
+  <div class="mlinks"><a href="#why">The thesis</a><a href="staffing-os-demo.html">Live demo</a><a href="staffing-os-specs.html">Tech &amp; setup</a><a href="#pricing">Pricing</a><a class="mcta" href="#" onclick="toast('Demo request sent — we’ll be in touch');return false;">Connect Bullhorn</a></div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <span class="eyebrow"><span class="d"></span>the talent layer over your ATS</span>
+  <h1>Your database is <span class="aq">60% wrong.</span> We make it self-cleaning.</h1>
+  <p>Bullhorn stores what was typed once. Copilot summarizes a meeting. <b>Neither can keep a candidate's data true.</b> Staffing OS gives every candidate a verified profile they own — and keeps your ATS current automatically, with their consent.</p>
+  <div class="cta"><a class="btn fill" href="staffing-os-demo.html">▶ Enter the live demo</a><button class="btn" onclick="toast('Demo request sent — we’ll be in touch')">Connect your Bullhorn</button></div>
+  <div class="hnote">Works atop Bullhorn &amp; Salesforce · lives in Microsoft Teams &amp; Slack · <a href="staffing-os-specs.html" style="color:var(--t2)">tech &amp; setup ›</a></div>
+</div></header>
+
+<section id="problem"><div class="wrap">
+  <div class="eyl">01 · the problem nobody fixed</div>
+  <h2 class="h2">Recruiters don't trust their own database — and they're right not to.</h2>
+  <p class="lead">Candidate data decays the moment it's entered. Availability shifts, comp moves, people get placed. Your ATS doesn't know — so your team re-keys, re-screens, and loses the placement to a faster competitor.</p>
+  <div class="grid3">
+    <div class="glass gc"><div class="n">≈30<span class="u">%</span></div><div class="l">of contact data decays every year — worse for high-velocity staffing data</div><div class="s">industry estimate</div></div>
+    <div class="glass gc"><div class="n">70<span class="u">%</span></div><div class="l">of a recruiter's day spent on admin, not selling or building relationships</div><div class="s">industry estimate</div></div>
+    <div class="glass gc"><div class="n">1<span class="u">st</span></div><div class="l">submission usually wins — and stale data means you are never first</div><div class="s">the whole game</div></div>
+  </div>
+</div></section>
+
+<section id="why"><div class="wrap">
+  <div class="eyl">02 · why this isn't Bullhorn + Copilot</div>
+  <h2 class="h2">Three things they <span class="aq">structurally can't do.</span></h2>
+  <p class="lead">Bullhorn is a firm-owned silo. Copilot is an assistant on your tenant. Both only know what was typed or said — and neither verifies anything.</p>
+  <div class="grid3">
+    <div class="glass tc"><div class="ti">i</div><h3>Give the candidate a seat</h3><p>Copilot can update a record from a meeting. It can't make the candidate keep their data current in the 90 days between touches. Only the candidate can — so in their world, rot is permanent.</p><div class="can">→ the candidate owns and maintains it</div></div>
+    <div class="glass tc"><div class="ti">ii</div><h3>Verify, not just store</h3><p>Bullhorn stores claims; Copilot summarizes them. Neither tests a skill, confirms employment, or live-confirms availability. A "match" is keyword guesswork.</p><div class="can">→ every claim verified at the source</div></div>
+    <div class="glass tc"><div class="ti">iii</div><h3>Cross the firm boundary</h3><p>A single-tenant ATS and a tenant-bound Copilot can never be a network. A candidate-owned, consented profile is portable across every firm that earns access.</p><div class="can">→ a living, consented talent network</div></div>
+  </div>
+</div></section>
+
+<section id="ledger"><div class="wrap">
+  <div class="eyl">03 · side by side</div>
+  <h2 class="h2">Same inputs. <span class="aq">A different kind of system.</span></h2>
+  <div class="glass ledger">
+    <div class="lrow h"><div class="k">&nbsp;</div><div class="v b">Bullhorn + Copilot</div><div class="v c">Staffing OS</div></div>
+    <div class="lrow"><div class="k">Who owns the data</div><div class="v b">The firm's silo</div><div class="v c">The candidate</div></div>
+    <div class="lrow"><div class="k">Data freshness</div><div class="v b">Decays between touches</div><div class="v c">Self-cleaning, candidate-kept</div></div>
+    <div class="lrow"><div class="k">What a "match" means</div><div class="v b">Keyword / LLM guess</div><div class="v c">Verified at the source</div></div>
+    <div class="lrow"><div class="k">Candidate experience</div><div class="v b">None — internal only</div><div class="v c">Owned profile, never ghosted</div></div>
+    <div class="lrow"><div class="k">Portability across firms</div><div class="v b">Locked in</div><div class="v c">Consented &amp; portable</div></div>
+    <div class="lrow"><div class="k">The business model</div><div class="v b">Own the lock-in</div><div class="v c">Earn the trust</div></div>
+  </div>
+  <p class="aside">Microsoft and Bullhorn won't build this — making candidate data portable away from their lock-in is the opposite of their business. <b>And LinkedIn is self-reported social, not verified, live, and consent-based.</b> A different object entirely.</p>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div class="eyl">04 · how it works</div>
+  <h2 class="h2">The candidate keeps it true. <span class="aq">You keep the placement.</span></h2>
+  <div class="glass steps" style="padding:8px 28px">
+    <div class="step"><span class="n">01</span><div><h3>The candidate owns a verified profile</h3><p>Built in two minutes from an interview. Skills, work, availability and comp — verified at the source, not self-reported.</p></div></div>
+    <div class="step"><span class="n">02</span><div><h3>They grant access, firm by firm</h3><p>Right-to-represent and consent are built in. They grant and revoke; you're always compliant.</p></div></div>
+    <div class="step"><span class="n">03</span><div><h3>Your ATS stays true, automatically</h3><p>Every update flows into Bullhorn or Salesforce. No re-keying. Your database is finally trustworthy.</p></div></div>
+    <div class="step"><span class="n">04</span><div><h3>You submit first, and place more</h3><p>Verified, current talent surfaced to you in Teams and Slack the moment they fit a role.</p></div></div>
+  </div>
+  <div class="punch">Your competitors have a database. You have a <span class="aq">living, verified talent network.</span></div>
+</div></section>
+
+<section id="experience"><div class="wrap">
+  <div class="eyl">05 · see it for yourself</div>
+  <h2 class="h2">The same verified record — from every seat.</h2>
+  <div class="exp">
+    <a class="glass ec" href="staffing-os-passport.html"><div class="et">the product</div><h3>The Talent Passport</h3><p>A candidate-owned, verified, agent-run identity. Tilt the card; tap the proof.</p><span class="go">open the Passport →</span></a>
+    <a class="glass ec" href="staffing-os-candidate.html"><div class="et">the candidate</div><h3>The candidate side</h3><p>The experience talent actually loves — live status, one-tap freshness, data they own.</p><span class="go">open the app →</span></a>
+    <a class="glass ec" href="staffing-os-demo.html"><div class="et">the firm</div><h3>The firm platform</h3><p>The recruiter desk in Teams — candidates, agents, revenue. Take the feature tour.</p><span class="go">open the demo →</span></a>
+  </div>
+</div></section>
+
+<section id="pricing"><div class="wrap center">
+  <div class="eyl" style="display:inline-block">06 · land in a day, expand from there</div>
+  <h2 class="h2">Start by cleaning your Bullhorn. Grow into the network.</h2>
+  <p class="lead">Connect your ATS and within 24 hours we'll show you what's stale and start fixing it — with your candidates' consent. No rip-and-replace.</p>
+  <div class="tiers" style="text-align:left">
+    <div class="glass tier"><div class="tn">Activate</div><div class="tp">$0<span> / pilot</span></div><div class="td">See your data rot. Believe it.</div><ul><li>Connect Bullhorn or Salesforce</li><li>Data-health audit in 24 hrs</li><li>Re-verify your 100 hottest candidates</li><li>Teams &amp; Slack agent</li></ul><button class="btn" onclick="toast('Pilot request sent')">Start free pilot</button></div>
+    <div class="glass tier feat"><div class="tn">Team</div><div class="tp">$49<span> / seat / mo</span></div><div class="td">Self-cleaning data + the full agent suite.</div><ul><li>Everything in Activate</li><li>Candidate-owned verified profiles</li><li>Caliber · Relay · Pulse · Radar agents</li><li>Auto write-back to your ATS</li><li>Consent &amp; right-to-represent built in</li></ul><button class="btn fill" onclick="toast('Demo request sent')">Get a demo</button></div>
+    <div class="glass tier"><div class="tn">Network</div><div class="tp">Custom</div><div class="td">A living, verified talent network for the firm.</div><ul><li>Everything in Team</li><li>Portable verified credentials</li><li>Cross-desk talent network</li><li>Revenue intelligence &amp; reporting</li><li>SSO, security review, SLAs</li></ul><button class="btn" onclick="toast('Request sent — let’s talk')">Talk to us</button></div>
+  </div>
+</div></section>
+
+<section class="close"><div class="wrap">
+  <div class="eyl">07 · the talent layer over your ATS</div>
+  <h2>Stop maintaining data. <span class="aq">Start winning talent.</span></h2>
+  <div class="cta"><a class="btn fill" href="staffing-os-demo.html">▶ Enter the live demo</a><button class="btn" onclick="toast('Demo request sent — we’ll be in touch')">Connect your Bullhorn</button></div>
+</div></section>
+
+<footer><div class="wrap"><div>© 2026 Gerrity AI · Staffing OS · <a href="index.html">‹ portfolio</a></div><div>Bullhorn &amp; Salesforce · Microsoft Teams &amp; Slack</div></div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+var T;function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('on');clearTimeout(T);T=setTimeout(function(){e.classList.remove('on');},2600);}
+</script>
+</body>
+</html>

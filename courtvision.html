@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>CourtVision. — AI pickleball companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CourtVision AI — Ink / Volt. Serif numerics, sans chrome.
+   Volt is a scalpel. No emoji. Composed, not kinetic.
+   ============================================================ */
+:root{
+  --ink:#0E0E10; --ink2:#1A1A1C; --ink3:#25252A; --bone:#F2EFE8;
+  --volt:#DEFF1F; --volt-tint:rgba(222,255,31,.10); --volt-tint2:rgba(222,255,31,.16);
+  --mist:#8A8A8A; --stone:#5F5E5A;
+  --coral:#E87458; --green:#2F6B3A; --green-t:#7AB389; --out:#F09B86;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --serif:"Newsreader","Charter","Iowan Old Style",Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#050507;color:var(--bone);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5;
+  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px;
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:26px 16px}
+.exit{position:fixed;top:16px;left:18px;z-index:60;font-size:12px;font-family:var(--sans);color:var(--mist);background:var(--ink2);border:1px solid var(--ink3);border-radius:10px;padding:7px 13px;text-decoration:none}
+.exit:hover{color:var(--bone)}
+.serif{font-family:var(--serif)}
+.it{font-style:italic}
+::selection{background:var(--volt);color:var(--ink)}
+
+/* phone frame */
+.phone{width:392px;max-width:100%;height:812px;max-height:92vh;background:var(--ink);border:1px solid var(--ink3);border-radius:34px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 50px 120px -40px #000,0 0 0 8px #0c0c0e}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .26s ease}
+.scr.on{opacity:1;pointer-events:auto}
+
+/* top bar */
+.bar{height:50px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:.5px solid var(--ink3);z-index:5;background:var(--ink)}
+.wm{font-family:var(--serif);font-style:italic;font-weight:400;font-size:20px;letter-spacing:-.01em;color:var(--bone)}
+.wm .p{color:var(--volt)}
+.barmode{font-family:var(--sans);font-size:11px;letter-spacing:.06em;color:var(--mist)}
+.iconbtn{width:32px;height:32px;border-radius:8px;background:none;border:1px solid transparent;color:var(--mist);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.iconbtn:hover{color:var(--bone);border-color:var(--ink3)}
+.iconbtn.on{color:var(--volt);border-color:var(--ink3)}
+.back{font-size:18px;color:var(--mist);background:none;border:0;cursor:pointer;width:30px;text-align:left}
+
+/* labels / type */
+.lab{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mist)}
+.voice{font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.4;color:var(--bone)}
+.btnv{font:500 13px var(--sans);letter-spacing:.01em;border:0;border-radius:10px;padding:12px 18px;cursor:pointer}
+.bV{background:var(--volt);color:var(--ink)}.bV:hover{filter:brightness(1.08)}.bV:active{transform:scale(.98)}
+.bO{background:transparent;color:var(--bone);border:1px solid var(--ink3)}.bO:hover{border-color:var(--mist)}
+.bG{background:transparent;color:var(--mist)}
+.bC{background:var(--coral);color:var(--ink)}
+
+/* ---------- HOME ---------- */
+#home .body{flex:1;display:flex;flex-direction:column;padding:24px 20px;gap:14px;overflow-y:auto}
+.hwm{font-family:var(--serif);font-style:italic;font-size:40px;letter-spacing:-.02em;margin:18px 0 2px;line-height:1}
+.hwm .p{color:var(--volt)}
+.htag{font-family:var(--serif);font-style:italic;color:var(--mist);font-size:15px;margin-bottom:14px}
+.modecard{background:var(--ink2);border:.5px solid var(--ink3);border-radius:14px;padding:18px;cursor:pointer;text-align:left;display:block;width:100%;transition:.16s}
+.modecard:hover{border-color:var(--mist)}
+.modecard.match:hover{border-color:var(--volt)}
+.modecard .mh{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.modecard h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:23px;margin:0;color:var(--bone)}
+.modecard p{font-size:13px;color:var(--mist);margin:0;line-height:1.45}
+.modecard .tagline{margin-top:11px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+.modecard.match .tagline{color:var(--volt)}
+.modecard.coach .tagline{color:var(--green-t)}
+.dot{width:7px;height:7px;border-radius:50%}
+.frame-ic{width:26px;height:26px;flex:0 0 auto}
+.hfoot{margin-top:auto;padding-top:16px;font-size:11px;color:var(--stone);line-height:1.5;border-top:.5px solid var(--ink3)}
+.hfoot b{color:var(--volt);font-weight:500}
+
+/* ---------- MATCH ---------- */
+#match .body{flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.view{position:relative;flex:0 0 auto;height:236px;background:radial-gradient(120% 90% at 50% 120%,#0c1a0d,#070708 70%);overflow:hidden;border-bottom:.5px solid var(--ink3)}
+.view svg{position:absolute;inset:0;width:100%;height:100%}
+.livechip{position:absolute;top:10px;left:10px;z-index:6;display:flex;align-items:center;gap:7px;background:rgba(5,5,7,.7);border:.5px solid var(--ink3);border-radius:999px;padding:5px 10px;font-size:11px;letter-spacing:.04em;color:var(--bone)}
+.livechip .dot{background:var(--volt);box-shadow:0 0 8px var(--volt);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+.callchip{position:absolute;top:10px;right:10px;z-index:6;font-family:var(--serif);font-style:italic;font-size:15px;padding:5px 12px;border-radius:999px;opacity:0;transition:opacity .18s;background:rgba(5,5,7,.78);border:.5px solid var(--ink3)}
+.callchip.show{opacity:1}
+.callchip.in{color:var(--green-t)}.callchip.out{color:var(--out)}.callchip.replay{color:var(--mist)}
+/* calibration overlay */
+.calib{position:absolute;inset:0;z-index:8;background:rgba(5,5,7,.55);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:16px;text-align:center;transition:opacity .3s}
+.calib .guide{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--bone);margin-bottom:6px;min-height:20px}
+.calib .conf{font-size:11px;letter-spacing:.06em;color:var(--volt);margin-bottom:12px}
+.calib.hidden{opacity:0;pointer-events:none}
+
+/* scoreboard */
+.board{flex:1;display:flex;flex-direction:column;padding:14px 18px 0;overflow:hidden}
+.scorerow{display:flex;align-items:flex-start;justify-content:center;gap:14px;margin-top:6px}
+.team{display:flex;flex-direction:column;align-items:center;min-width:96px}
+.team .tn{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin-bottom:4px}
+.team .sc{font-family:var(--serif);font-size:62px;line-height:1;letter-spacing:-.02em;color:var(--bone);font-variant-numeric:tabular-nums;position:relative}
+.team.serving .sc::after{content:"";position:absolute;left:8%;right:8%;bottom:-7px;height:2px;background:var(--volt);border-radius:2px}
+.dash{font-family:var(--serif);font-size:40px;color:var(--ink3);line-height:1.4}
+.srv{display:flex;flex-direction:column;align-items:center;justify-content:center;padding-left:4px}
+.srv .tn{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin-bottom:3px}
+.srv .sn{font-family:var(--serif);font-size:34px;line-height:1;color:var(--volt);font-variant-numeric:tabular-nums}
+.statusline{text-align:center;font-size:11px;letter-spacing:.05em;color:var(--mist);margin-top:16px}
+.lastev{text-align:center;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--stone);margin-top:6px;min-height:18px}
+
+/* autowatch banner */
+.aw{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--ink2);border:.5px solid var(--ink3);border-radius:12px;padding:11px 13px;margin:14px 0 0}
+.aw .t{font-size:12px;color:var(--bone)}
+.aw .t b{font-weight:500}
+.aw .s{font-size:11px;color:var(--mist);margin-top:1px}
+.tog{width:42px;height:24px;border-radius:999px;background:var(--ink3);border:0;cursor:pointer;position:relative;flex:0 0 auto;transition:background .18s}
+.tog.on{background:var(--volt)}
+.tog i{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--ink);transition:transform .18s}
+.tog.on i{transform:translateX(18px)}
+
+/* action row */
+.actions{flex:0 0 auto;padding:14px 18px 18px;display:grid;grid-template-columns:1.4fr 1fr;gap:9px}
+.actions .wide{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:2px}
+.act{border:0;border-radius:11px;padding:13px 10px;cursor:pointer;font:500 13px var(--sans)}
+.act.pri{background:var(--volt);color:var(--ink)}
+.act.sec{background:var(--ink2);color:var(--bone);border:.5px solid var(--ink3)}
+.act.tert{background:transparent;color:var(--mist);border:.5px solid var(--ink3);font-size:12px;padding:10px 6px}
+.act:active{transform:scale(.98)}
+
+/* end game */
+.endcard{position:absolute;inset:0;z-index:20;background:var(--ink);display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center}
+.endcard.on{display:flex}
+.endcard .lab{margin-bottom:10px}
+.endcard .gscore{font-family:var(--serif);font-size:90px;line-height:1;letter-spacing:-.03em;color:var(--bone);font-variant-numeric:tabular-nums}
+.endcard .gwin{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--volt);margin-top:8px}
+.endcard .row{display:flex;gap:10px;margin-top:26px}
+
+/* ---------- COACH ---------- */
+#coach .body{flex:1;overflow-y:auto;padding:18px 16px 26px}
+.coachhead{font-family:var(--serif);font-style:italic;font-size:26px;margin:4px 0 2px}
+.coachsub{font-family:var(--serif);font-style:italic;color:var(--mist);font-size:14px;margin-bottom:16px}
+.sectlab{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin:22px 0 9px}
+.card{background:var(--ink2);border:.5px solid var(--ink3);border-radius:14px;padding:15px 16px;margin-bottom:10px}
+.vcard .stamp{font-size:10.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.vcard .stamp .ix{width:14px;height:14px;flex:0 0 auto}
+.vcard .link{margin-top:10px;font-size:12px;font-weight:500;color:var(--volt);cursor:pointer}
+.vcard .link:hover{filter:brightness(1.1)}
+/* progress */
+.prog{display:flex;align-items:flex-end;gap:6px;height:74px;margin-top:6px}
+.prog .b{flex:1;background:var(--ink3);border-radius:4px 4px 0 0;position:relative;transition:height .4s}
+.prog .b.now{background:var(--green)}
+.prog .wk{position:absolute;bottom:-16px;left:0;right:0;text-align:center;font-size:9px;color:var(--stone)}
+.metric{display:flex;justify-content:space-between;align-items:baseline}
+.metric .v{font-family:var(--serif);font-size:30px;color:var(--bone);font-variant-numeric:tabular-nums}
+.metric .d{font-size:11px;color:var(--green-t);display:flex;align-items:center;gap:5px}
+.metric .d .dot{background:var(--green)}
+/* milestone (coral, sparing) */
+.mile{background:linear-gradient(180deg,rgba(232,116,88,.12),transparent),var(--ink2);border:.5px solid rgba(232,116,88,.35);border-radius:14px;padding:15px 16px;margin-bottom:10px}
+.mile .t{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--coral)}
+.mile p{font-size:12.5px;color:var(--mist);margin:5px 0 0}
+/* drills */
+.drill{display:flex;align-items:center;gap:12px;background:var(--ink2);border:.5px solid var(--ink3);border-radius:12px;padding:12px 14px;margin-bottom:9px}
+.drill .n{font-family:var(--serif);font-size:22px;color:var(--volt);width:26px;text-align:center;flex:0 0 auto}
+.drill .x b{display:block;font-size:13.5px;color:var(--bone);font-weight:500}
+.drill .x span{font-size:11.5px;color:var(--mist)}
+.drill .meta{margin-left:auto;font-size:10.5px;color:var(--stone);text-align:right;white-space:nowrap}
+.logbtn{width:100%;margin-top:4px}
+</style>
+</head>
+<body>
+<a class="exit" href="index.html">‹ portfolio</a>
+
+<div class="phone">
+
+  <!-- ============ HOME ============ -->
+  <section class="scr on" id="home">
+    <div class="bar">
+      <span class="wm">CourtVision<span class="p">.</span></span>
+      <button class="iconbtn" title="settings">⚙</button>
+    </div>
+    <div class="body">
+      <div class="hwm">See <span class="p">everything.</span></div>
+      <div class="htag">A credible second pair of eyes — courtside and after.</div>
+
+      <button class="modecard match" onclick="go('match')">
+        <div class="mh">
+          <svg class="frame-ic" viewBox="0 0 80 80" fill="none" stroke="#DEFF1F" stroke-width="5">
+            <path d="M8 24 V8 H24 M56 8 H72 V24 M72 56 V72 H56 M24 72 H8 V56"/>
+            <circle cx="40" cy="40" r="5" fill="#DEFF1F" stroke="none"/>
+          </svg>
+          <h3>Match mode</h3>
+        </div>
+        <p>Prop the phone courtside. CourtVision calls the lines and keeps score — out loud — so play never stops for "wait, what's the score?"</p>
+        <div class="tagline">▶ live · auto-scoring</div>
+      </button>
+
+      <button class="modecard coach" onclick="go('coach')">
+        <div class="mh">
+          <span class="dot" style="background:#7AB389;width:11px;height:11px;border-radius:3px"></span>
+          <h3>Coach mode</h3>
+        </div>
+        <p>Upload a clip. I notice one or two things that matter, tie them to your history, and hand you the drill that fixes them.</p>
+        <div class="tagline">async · improvement</div>
+      </button>
+
+      <div class="hfoot">Built on the principle: <b>vision detects the event, tested code keeps the score.</b> The rulebook is an engine, not a guess — so a wrong call never makes it on screen.</div>
+    </div>
+  </section>
+
+  <!-- ============ MATCH ============ -->
+  <section class="scr" id="match">
+    <div class="bar">
+      <button class="back" onclick="go('home')">‹</button>
+      <span class="barmode">Match mode · <span style="color:var(--volt)">live</span></span>
+      <button class="iconbtn" id="micBtn" title="voice calls" onclick="toggleVoice()">🔊</button>
+    </div>
+    <div class="body">
+
+      <div class="view" id="view">
+        <span class="livechip"><span class="dot" style="width:7px;height:7px"></span> Match mode · live</span>
+        <span class="callchip" id="callchip"></span>
+        <svg viewBox="0 0 392 236" id="court" preserveAspectRatio="xMidYMid slice">
+          <!-- painted court (camera feed), trapezoid perspective -->
+          <polygon points="120,40 272,40 372,210 20,210" fill="#0a160b" stroke="#2a3a2c" stroke-width="1"/>
+          <!-- AI overlay: Volt traced lines -->
+          <g id="overlay" stroke="#DEFF1F" stroke-width="3" fill="none" stroke-linecap="round">
+            <polygon points="120,40 272,40 372,210 20,210"/>
+          </g>
+          <!-- net (dashed) -->
+          <line id="net" x1="105" y1="40" x2="287" y2="40" stroke="#DEFF1F" stroke-width="2" stroke-dasharray="4 3" opacity="0"/>
+          <!-- kitchen + center (drawn via JS-free static) -->
+          <g stroke="#DEFF1F" stroke-width="2" fill="none" id="lines2" opacity="0">
+            <line x1="146" y1="92" x2="246" y2="92"/>
+            <line x1="196" y1="40" x2="196" y2="92"/>
+            <line x1="196" y1="92" x2="196" y2="210"/>
+          </g>
+          <!-- corner brackets -->
+          <g id="brackets" stroke="#DEFF1F" stroke-width="3" fill="none" stroke-linecap="round"></g>
+          <!-- trajectory + ball -->
+          <path id="traj" stroke="#DEFF1F" stroke-width="2" fill="none" opacity="0"/>
+          <circle id="ball" r="3.5" fill="#DEFF1F" opacity="0"/>
+          <g id="crosshair" opacity="0" stroke="#DEFF1F" stroke-width="1.5"><line x1="-6" y1="0" x2="6" y2="0"/><line x1="0" y1="-6" x2="0" y2="6"/><circle r="5" fill="none"/></g>
+        </svg>
+        <div class="calib" id="calib">
+          <div class="guide it serif" id="calibGuide">Locking onto the court…</div>
+          <div class="conf" id="calibConf">finding anchors…</div>
+          <button class="btnv bV" id="lockBtn" style="display:none" onclick="lockIn()">Lock in &amp; start</button>
+        </div>
+      </div>
+
+      <div class="board">
+        <div class="scorerow">
+          <div class="team serving" id="teamA"><div class="tn">Team A</div><div class="sc" id="scA">0</div></div>
+          <div class="dash">–</div>
+          <div class="team" id="teamB"><div class="tn">Team B</div><div class="sc" id="scB">0</div></div>
+          <div class="srv"><div class="tn">Srv</div><div class="sn" id="srvN">2</div></div>
+        </div>
+        <div class="statusline" id="statusline">First service · one-server rule</div>
+        <div class="lastev" id="lastev">Court locked. I can see all six anchors.</div>
+
+        <div class="aw">
+          <div><div class="t"><b>Auto-watch</b> — I score it</div><div class="s" id="awSub">I watch the rally and keep score myself</div></div>
+          <button class="tog" id="awTog" onclick="toggleAuto()"><i></i></button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="act pri" onclick="manual('point')">Point · serving team</button>
+        <button class="act sec" onclick="manual('rally')">Rally lost</button>
+        <div class="wide">
+          <button class="act tert" onclick="manual('fault')">Fault</button>
+          <button class="act tert" onclick="manual('undo')">Undo</button>
+          <button class="act tert" onclick="manual('new')">New game</button>
+        </div>
+      </div>
+
+      <div class="endcard" id="endcard">
+        <div class="lab">Game</div>
+        <div class="gscore" id="endScore">11–6</div>
+        <div class="gwin it" id="endWin">Team A.</div>
+        <div class="row"><button class="btnv bV" onclick="newGame()">Rematch</button><button class="btnv bO" onclick="go('home')">Finish</button></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ COACH ============ -->
+  <section class="scr" id="coach">
+    <div class="bar">
+      <button class="back" onclick="go('home')">‹</button>
+      <span class="barmode">Coach</span>
+      <button class="iconbtn" title="profile">◔</button>
+    </div>
+    <div class="body">
+      <div class="coachhead it">Two things I noticed.</div>
+      <div class="coachsub it">Both fixable. Here's the session.</div>
+
+      <button class="btnv bV logbtn" onclick="logSession()">＋ Log a session</button>
+
+      <div class="sectlab">This week's progress</div>
+      <div class="card">
+        <div class="metric"><div><div class="lab" style="margin-bottom:4px">Third shot drop · depth</div><div class="v">mid-court</div></div><div class="d"><span class="dot" style="width:6px;height:6px;border-radius:50%"></span>+1 zone vs last week</div></div>
+        <div class="prog">
+          <div class="b" style="height:34%"><span class="wk">wk1</span></div>
+          <div class="b" style="height:40%"><span class="wk">wk2</span></div>
+          <div class="b" style="height:38%"><span class="wk">wk3</span></div>
+          <div class="b" style="height:52%"><span class="wk">wk4</span></div>
+          <div class="b" style="height:61%"><span class="wk">wk5</span></div>
+          <div class="b now" style="height:78%"><span class="wk">now</span></div>
+        </div>
+      </div>
+
+      <div class="mile">
+        <div class="t it">Cleanest backhand dink you've hit this month.</div>
+        <p>Rally 14, clip 3. Soft hands, contact out front, paddle face quiet. Keep that.</p>
+      </div>
+
+      <div class="sectlab" id="feedLab">Latest analysis</div>
+      <div id="feed">
+        <div class="card vcard">
+          <div class="stamp"><svg class="ix" viewBox="0 0 24 24" fill="none" stroke="#8A8A8A" stroke-width="1.5"><path d="M3 6 V3 H6 M18 3 H21 V6 M21 18 V21 H18 M6 21 H3 V18"/><circle cx="12" cy="12" r="1.5" fill="#8A8A8A" stroke="none"/></svg>Third shot · clip 3</div>
+          <div class="voice it">Your third shot drop is landing deeper than last week — mid-court instead of the kitchen line. Good direction. Next: softer hands on contact.</div>
+          <div class="link" onclick="this.textContent='Clip queued ▸'">Watch the clip →</div>
+        </div>
+        <div class="card vcard">
+          <div class="stamp"><svg class="ix" viewBox="0 0 24 24" fill="none" stroke="#8A8A8A" stroke-width="1.5"><path d="M3 6 V3 H6 M18 3 H21 V6 M21 18 V21 H18 M6 21 H3 V18"/><circle cx="12" cy="12" r="1.5" fill="#8A8A8A" stroke="none"/></svg>Rally 14 · volley</div>
+          <div class="voice it">You won that rally, but you stepped into the kitchen on the volley. Easy fix, big points back.</div>
+          <div class="link" onclick="this.textContent='Clip queued ▸'">Watch the clip →</div>
+        </div>
+      </div>
+
+      <div class="sectlab">Drills for you</div>
+      <div class="drill"><div class="n serif">1</div><div class="x"><b>Soft-hands drop ladder</b><span>10 drops, kitchen-line target</span></div><div class="meta">8 min<br>fixes: depth</div></div>
+      <div class="drill"><div class="n serif">2</div><div class="x"><b>Kitchen-line reset</b><span>footwork on the volley step</span></div><div class="meta">6 min<br>fixes: faults</div></div>
+      <div class="drill"><div class="n serif">3</div><div class="x"><b>Backhand dink hold</b><span>cross-court, 20 in a row</span></div><div class="meta">7 min<br>keep sharp</div></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ---------------- screens ---------------- */
+function go(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  if(id==='match') startCalibration();
+  else stopAuto();
+}
+
+/* ---------------- voice ---------------- */
+var voiceOn=false;
+function toggleVoice(){voiceOn=!voiceOn;document.getElementById('micBtn').classList.toggle('on',voiceOn);document.getElementById('micBtn').textContent=voiceOn?'🔊':'🔇';if(voiceOn) say('Voice on.');}
+function say(t){ if(!voiceOn||!window.speechSynthesis) return; try{var u=new SpeechSynthesisUtterance(t);u.rate=1.04;u.pitch=1;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){} }
+
+/* ---------------- calibration ---------------- */
+var SVGNS="http://www.w3.org/2000/svg";
+function drawBrackets(){
+  var g=document.getElementById('brackets');g.innerHTML='';
+  // corners of the trapezoid: TL120,40 TR272,40 BR372,210 BL20,210
+  var corners=[[120,40,1,1],[272,40,-1,1],[372,210,-1,-1],[20,210,1,-1]];
+  corners.forEach(function(c,i){
+    var p=document.createElementNS(SVGNS,'path');
+    var L=18, x=c[0], y=c[1], sx=c[2], sy=c[3];
+    p.setAttribute('d','M'+(x)+' '+(y+sy*L)+' L'+x+' '+y+' L'+(x+sx*L)+' '+y);
+    p.style.opacity=0; p.style.transition='opacity .4s ease '+(i*0.08)+'s, transform .5s ease '+(i*0.08)+'s';
+    p.style.transform='translate('+(sx*10)+'px,'+(sy*10)+'px)';
+    g.appendChild(p);
+    requestAnimationFrame(function(){p.style.opacity=1;p.style.transform='translate(0,0)';});
+  });
+}
+var calibTimer;
+function startCalibration(){
+  resetScore(); document.getElementById('endcard').classList.remove('on');
+  var calib=document.getElementById('calib');calib.classList.remove('hidden');
+  document.getElementById('lockBtn').style.display='none';
+  document.getElementById('net').style.opacity=0;document.getElementById('lines2').style.opacity=0;
+  document.getElementById('brackets').innerHTML='';
+  var guides=['Locking onto the court…','Net post out of frame on the left. Rotate slightly right.','I can see the near baseline. Tilt up a little.','Anchors locking in…'];
+  var confs=['finding anchors…','3 / 6 anchors','5 / 6 anchors','6 / 6 anchors · 97% locked'];
+  var i=0;clearInterval(calibTimer);
+  document.getElementById('calibGuide').textContent=guides[0];
+  document.getElementById('calibConf').textContent=confs[0];
+  drawBrackets();
+  calibTimer=setInterval(function(){
+    i++;
+    if(i<guides.length){document.getElementById('calibGuide').textContent=guides[i];document.getElementById('calibConf').textContent=confs[i];}
+    if(i>=2){document.getElementById('net').style.opacity=1;document.getElementById('lines2').style.opacity=1;}
+    if(i>=guides.length-1){clearInterval(calibTimer);document.getElementById('lockBtn').style.display='inline-block';document.getElementById('calibGuide').textContent='Verify the Volt sits on the painted lines.';}
+  },950);
+}
+function lockIn(){
+  document.getElementById('calib').classList.add('hidden');
+  setLast('Court locked. I can see all six anchors.'); say('Court locked.');
+}
+
+/* ---------------- scoring engine (USA Pickleball side-out, doubles) ---------------- */
+var S, hist;
+function resetScore(){ S={A:0,B:0,serving:'A',server:2,firstTurn:true,to:11,over:false,winner:null}; hist=[]; render(); }
+function other(t){return t==='A'?'B':'A';}
+function snapshot(){return JSON.stringify(S);}
+function pushHist(){hist.push(snapshot()); if(hist.length>60)hist.shift();}
+
+function pointServing(){ if(S.over)return; pushHist(); S[S.serving]++; checkWin(); render(); announce(); }
+function rallyLost(){ if(S.over)return; pushHist();
+  if(S.firstTurn){ sideout(); }
+  else if(S.server===1){ S.server=2; }
+  else { sideout(); }
+  render(); announce();
+}
+function sideout(){ S.serving=other(S.serving); S.server=1; S.firstTurn=false; }
+function fault(reason){ if(S.over)return; setLast('Fault. '+reason+'.'); say('Fault. '+reason+'. '+afterCall()); rallyLost(); }
+function checkWin(){ if(S[S.serving]>=S.to && (S[S.serving]-S[other(S.serving)])>=2){ S.over=true; S.winner=S.serving; } }
+function undo(){ if(!hist.length)return; S=JSON.parse(hist.pop()); S.over=false;S.winner=null; document.getElementById('endcard').classList.remove('on'); render(); setLast('Undone.'); }
+
+function callStr(){ return S[S.serving]+' '+S[other(S.serving)]+' '+S.server; }
+function callWords(){ var w={0:'zero',1:'one',2:'two',3:'three',4:'four',5:'five',6:'six',7:'seven',8:'eight',9:'nine',10:'ten',11:'eleven',12:'twelve',13:'thirteen',14:'fourteen',15:'fifteen'}; function n(x){return w[x]!==undefined?w[x]:x;} return n(S[S.serving])+' '+n(S[other(S.serving)])+' '+S.server; }
+function afterCall(){ return S.over? '' : callWords()+'.'; }
+
+function announce(){
+  render();
+  if(S.over){ var msg='Game. Team '+S.winner+'. '+wd(S[S.winner])+' '+wd(S[other(S.winner)])+'.'; setLast('Game. Team '+S.winner+'. '+S.A+'–'+S.B); say(msg); showEnd(); return; }
+  setLast(callStr().replace(/ /g,'·').replace(/·/g,' · '));
+  say(callWords()+'.');
+}
+function wd(x){var w=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen'];return w[x]!==undefined?w[x]:x;}
+
+function render(){
+  document.getElementById('scA').textContent=S.A;
+  document.getElementById('scB').textContent=S.B;
+  document.getElementById('srvN').textContent=S.server;
+  document.getElementById('teamA').classList.toggle('serving',S.serving==='A');
+  document.getElementById('teamB').classList.toggle('serving',S.serving==='B');
+  document.getElementById('statusline').textContent = S.over ? 'Game over' : (S.firstTurn?'First service · one-server rule':'Serving: Team '+S.serving+' · server '+S.server+' · game to '+S.to);
+}
+function setLast(t){ document.getElementById('lastev').textContent=t; }
+
+/* ---------------- end of game ---------------- */
+function showEnd(){
+  document.getElementById('endScore').textContent=S.A+'–'+S.B;
+  document.getElementById('endWin').textContent='Team '+S.winner+'.';
+  document.getElementById('endcard').classList.add('on');
+  stopAuto();
+}
+function newGame(){ document.getElementById('endcard').classList.remove('on'); resetScore(); setLast('New game. Zero zero two.'); say('New game. Zero zero two.'); }
+
+/* ---------------- manual controls ---------------- */
+function manual(kind){
+  if(document.getElementById('calib').classList.contains('hidden')===false) return;
+  if(kind==='point') pointServing();
+  else if(kind==='rally') rallyLost();
+  else if(kind==='fault') fault('Non-volley zone');
+  else if(kind==='undo') undo();
+  else if(kind==='new') newGame();
+}
+
+/* ---------------- AUTO-WATCH: the auto-scoring layer ---------------- */
+var auto=false, autoTimer=null, animating=false;
+function toggleAuto(){
+  auto=!auto;
+  document.getElementById('awTog').classList.toggle('on',auto);
+  document.getElementById('awSub').textContent = auto ? 'Watching the rally…' : 'I watch the rally and keep score myself';
+  if(auto){ if(document.getElementById('calib').classList.contains('hidden')===false) lockIn(); loopAuto(); }
+  else stopAuto();
+}
+function stopAuto(){ auto=false; var t=document.getElementById('awTog'); if(t)t.classList.remove('on'); clearTimeout(autoTimer); var s=document.getElementById('awSub'); if(s)s.textContent='I watch the rally and keep score myself'; }
+function loopAuto(){ if(!auto||S.over) return; autoTimer=setTimeout(runRally,1400); }
+
+function runRally(){
+  if(!auto||S.over||animating) return;
+  animating=true;
+  // bounce point inside court-ish
+  var bx=60+Math.random()*272, by=70+Math.random()*128;
+  // decide line-call sometimes (near the lines)
+  var r=Math.random();
+  var lineCall=null; // 'in' | 'out' | 'replay'
+  if(r<0.18){ lineCall='out'; bx = Math.random()<.5 ? (12+Math.random()*12) : (368-Math.random()*12); }
+  else if(r<0.30){ lineCall='in'; }
+  else if(r<0.34){ lineCall='replay'; }
+  animateBall(bx,by,function(){
+    var chip=document.getElementById('callchip');
+    if(lineCall==='out'){ flashCall('out','Out. '+(bx<196?'Wide.':'Long.')); say('Out. '+(bx<196?'Wide.':'Long.')); resolveRally(Math.random()<.5); }
+    else if(lineCall==='in'){ flashCall('in','In.'); resolveRally(Math.random()<.62); }
+    else if(lineCall==='replay'){ flashCall('replay','Close. Replay.'); say('Close. Let’s replay.'); animating=false; loopAuto(); return; }
+    else { resolveRally(Math.random()<.6); }
+    animating=false;
+    loopAuto();
+  });
+}
+function resolveRally(servingWon){
+  if(servingWon) pointServing(); else rallyLost();
+}
+function flashCall(cls,txt){
+  var chip=document.getElementById('callchip');
+  chip.className='callchip show '+cls; chip.textContent=txt;
+  setTimeout(function(){chip.classList.remove('show');},1500);
+}
+function animateBall(tx,ty,done){
+  var ball=document.getElementById('ball'), traj=document.getElementById('traj'), ch=document.getElementById('crosshair');
+  var sx=196, sy=44; // from net area
+  traj.setAttribute('d','M'+sx+' '+sy+' Q'+((sx+tx)/2)+' '+(Math.min(sy,ty)-30)+' '+tx+' '+ty);
+  traj.style.opacity=.9; ball.style.opacity=1;
+  var t=0, dur=620, start=null;
+  function frame(ts){
+    if(!start)start=ts; t=(ts-start)/dur; if(t>1)t=1;
+    // quad bezier point
+    var mx=(sx+tx)/2, my=Math.min(sy,ty)-30;
+    var x=(1-t)*(1-t)*sx+2*(1-t)*t*mx+t*t*tx;
+    var y=(1-t)*(1-t)*sy+2*(1-t)*t*my+t*t*ty;
+    ball.setAttribute('cx',x);ball.setAttribute('cy',y);
+    if(t<1) requestAnimationFrame(frame);
+    else{
+      ch.setAttribute('transform','translate('+tx+','+ty+')');ch.style.opacity=1;
+      ball.style.opacity=0;
+      setTimeout(function(){traj.style.opacity=0;ch.style.opacity=0;},700);
+      done&&done();
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ---------------- coach: log session ---------------- */
+var coachLines=[
+  ['Serve · clip 6','Your serve depth is back. Landing past the midline again — that’s the pressure that sets up your third.'],
+  ['Dink rally · clip 9','Patient hands today. You out-waited them twice and took the attackable ball. That’s the level-up.'],
+  ['Transition · clip 2','You’re drifting through the transition zone. Split-step and reset — one beat slower wins more of these.'],
+  ['Backhand · clip 4','Cleaner backhand roll than last week. Contact’s out front now. Keep the paddle face quiet.']
+];
+var ci=0;
+function logSession(){
+  var ln=coachLines[ci%coachLines.length]; ci++;
+  var feed=document.getElementById('feed');
+  var c=document.createElement('div'); c.className='card vcard'; c.style.opacity=0; c.style.transition='opacity .25s';
+  c.innerHTML='<div class="stamp"><svg class="ix" viewBox="0 0 24 24" fill="none" stroke="#8A8A8A" stroke-width="1.5"><path d="M3 6 V3 H6 M18 3 H21 V6 M21 18 V21 H18 M6 21 H3 V18"/><circle cx="12" cy="12" r="1.5" fill="#8A8A8A" stroke="none"/></svg>'+ln[0]+'</div><div class="voice it">'+ln[1]+'</div><div class="link" onclick="this.textContent=\'Clip queued ▸\'">Watch the clip →</div>';
+  feed.insertBefore(c,feed.firstChild);
+  requestAnimationFrame(function(){c.style.opacity=1;});
+  document.getElementById('feedLab').textContent='Latest analysis';
+}
+
+/* init */
+resetScore();
+</script>
+</body>
+</html>

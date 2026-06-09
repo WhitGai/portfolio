@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="300" viewBox="0 0 860 300" font-family="Segoe UI,Helvetica,Arial,sans-serif">
+  <rect width="860" height="300" rx="14" fill="#ffffff" stroke="#e5e9f0"/>
+  <text x="28" y="42" font-size="18" font-weight="600" fill="#0f1722">One engine, four scoring modes — same 7 rallies</text>
+  <text x="28" y="64" font-size="13" fill="#6b7a8d">W = server wins · L = server loses · each cell is the engine's score call</text>
+  <g font-size="12" font-weight="600" fill="#33414f" text-anchor="middle">
+    <text x="300" y="100">Doubles · side-out</text><text x="450" y="100">Singles · side-out</text>
+    <text x="600" y="100">Doubles · rally</text><text x="750" y="100">Singles · rally</text>
+  </g>
+  <g font-family="Consolas,monospace" font-size="13" text-anchor="middle">
+<text x="40" y="120" font-size="12" font-weight="600" fill="#6b7a8d" text-anchor="start" font-family="Segoe UI,Arial">start</text>
+<text x="300" y="120" fill="#0f1722" font-weight="400">0 0 2</text>
+<text x="450" y="120" fill="#0f1722" font-weight="400">0 0</text>
+<text x="600" y="120" fill="#0f1722" font-weight="400">0 0</text>
+<text x="750" y="120" fill="#0f1722" font-weight="400">0 0</text>
+<text x="40" y="141" font-size="12" font-weight="600" fill="#15803d" text-anchor="start" font-family="Segoe UI,Arial">W</text>
+<text x="300" y="141" fill="#0f1722" font-weight="400">1 0 2</text>
+<text x="450" y="141" fill="#0f1722" font-weight="400">1 0</text>
+<text x="600" y="141" fill="#0f1722" font-weight="400">1 0</text>
+<text x="750" y="141" fill="#0f1722" font-weight="400">1 0</text>
+<text x="40" y="162" font-size="12" font-weight="600" fill="#15803d" text-anchor="start" font-family="Segoe UI,Arial">W</text>
+<text x="300" y="162" fill="#0f1722" font-weight="400">2 0 2</text>
+<text x="450" y="162" fill="#0f1722" font-weight="400">2 0</text>
+<text x="600" y="162" fill="#0f1722" font-weight="400">2 0</text>
+<text x="750" y="162" fill="#0f1722" font-weight="400">2 0</text>
+<text x="40" y="183" font-size="12" font-weight="600" fill="#b42318" text-anchor="start" font-family="Segoe UI,Arial">L</text>
+<text x="300" y="183" fill="#0f1722" font-weight="400">0 2 1</text>
+<text x="450" y="183" fill="#0f1722" font-weight="400">0 2</text>
+<text x="600" y="183" fill="#0f1722" font-weight="400">1 2</text>
+<text x="750" y="183" fill="#0f1722" font-weight="400">1 2</text>
+<text x="40" y="204" font-size="12" font-weight="600" fill="#15803d" text-anchor="start" font-family="Segoe UI,Arial">W</text>
+<text x="300" y="204" fill="#0f1722" font-weight="400">1 2 1</text>
+<text x="450" y="204" fill="#0f1722" font-weight="400">1 2</text>
+<text x="600" y="204" fill="#0f1722" font-weight="400">2 2</text>
+<text x="750" y="204" fill="#0f1722" font-weight="400">2 2</text>
+<text x="40" y="225" font-size="12" font-weight="600" fill="#b42318" text-anchor="start" font-family="Segoe UI,Arial">L</text>
+<text x="300" y="225" fill="#0f1722" font-weight="400">1 2 2</text>
+<text x="450" y="225" fill="#0f1722" font-weight="400">2 1</text>
+<text x="600" y="225" fill="#0f1722" font-weight="400">3 2</text>
+<text x="750" y="225" fill="#0f1722" font-weight="400">3 2</text>
+<text x="40" y="246" font-size="12" font-weight="600" fill="#b42318" text-anchor="start" font-family="Segoe UI,Arial">L</text>
+<text x="300" y="246" fill="#0f1722" font-weight="400">2 1 1</text>
+<text x="450" y="246" fill="#0f1722" font-weight="400">1 2</text>
+<text x="600" y="246" fill="#0f1722" font-weight="400">3 3</text>
+<text x="750" y="246" fill="#0f1722" font-weight="400">3 3</text>
+<text x="40" y="267" font-size="12" font-weight="600" fill="#15803d" text-anchor="start" font-family="Segoe UI,Arial">W</text>
+<text x="300" y="267" fill="#0f1722" font-weight="600">3 1 1</text>
+<text x="450" y="267" fill="#0f1722" font-weight="600">2 2</text>
+<text x="600" y="267" fill="#0f1722" font-weight="600">4 3</text>
+<text x="750" y="267" fill="#0f1722" font-weight="600">4 3</text>
+  </g>
+  <rect x="28" y="262" width="804" height="0.5" fill="#e5e9f0"/>
+  <text x="28" y="285" font-size="12.5" fill="#0f6e56">Side-out credits only the server → 3 1 1 / 2 2.  Rally credits every point → 4 3.  All four unit-tested.</text>
+</svg>

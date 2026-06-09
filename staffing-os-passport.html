@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Talent Passport — Staffing OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#031421; --panel:#0a2238; --panel2:#0e2c44; --ink:#e9f6ff; --t2:#a4c6d8; --t3:#5e8298; --line:rgba(160,220,255,.13);
+  --em:#34e3d2; --blue:#5cc8ff; --violet:#37c6ff; --mag:#13b6a8;
+  --holo:linear-gradient(120deg,#34e3d2 0%,#37c6ff 42%,#5cc8ff 72%,#6aa7ff 100%);
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t2);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(46% 40% at 78% 4%,rgba(52,227,210,.16),transparent 70%),
+  radial-gradient(44% 38% at 10% 18%,rgba(92,200,255,.13),transparent 70%),
+  radial-gradient(50% 40% at 60% 100%,rgba(55,198,255,.10),transparent 70%)}
+a{color:var(--ink);text-decoration:none}
+.mono{font-family:var(--mono)}
+.holo-t{background:var(--holo);-webkit-background-clip:text;background-clip:text;color:transparent}
+.exit{position:fixed;top:14px;left:16px;z-index:30;font-size:12px;color:var(--t3);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:9px;padding:7px 13px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 26px}
+h1,h2{margin:0;color:var(--ink);font-weight:800;letter-spacing:-.035em;line-height:1.04}
+
+/* hero */
+.hero{padding:120px 0 70px;text-align:center}
+.kick{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--em);border:1px solid rgba(52,227,210,.3);background:rgba(52,227,210,.07);border-radius:999px;padding:7px 15px;margin-bottom:26px}
+.hero h1{font-size:clamp(36px,6vw,62px);max-width:16ch;margin:0 auto 18px}
+.hero p{font-size:clamp(17px,2vw,20px);max-width:54ch;margin:0 auto;color:var(--t2)}
+.hero p b{color:var(--ink);font-weight:600}
+
+/* passport card */
+.stage{perspective:1400px;display:flex;justify-content:center;margin:48px 0 10px}
+.passport{width:min(440px,92vw);border-radius:22px;padding:1.5px;background:var(--holo);box-shadow:0 50px 110px -30px rgba(0,0,0,.8),0 0 70px -30px rgba(92,200,255,.5);transition:transform .15s ease;transform-style:preserve-3d;position:relative}
+.passport .inner{border-radius:21px;background:linear-gradient(150deg,#141d30,#0a0e18);padding:24px;position:relative;overflow:hidden}
+.passport .sheen{position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.10) 47%,transparent 60%);transform:translateX(-30%);pointer-events:none}
+.pp-top{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.pp-top .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--t2)}
+.pp-top .chip{width:30px;height:22px;border-radius:5px;background:linear-gradient(135deg,#d9c27a,#9c8a4e);margin-left:auto;opacity:.9}
+.pp-top .gai{font-weight:900;font-size:14px;letter-spacing:-.04em;color:#fff}.pp-top .gai .g{color:var(--mag)}
+.pp-id{display:flex;align-items:center;gap:14px}
+.pp-av{width:58px;height:58px;border-radius:16px;background:var(--holo);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#0a0e18;flex:0 0 auto}
+.pp-name{font-size:21px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.pp-role{font-family:var(--mono);font-size:12px;color:var(--t2);margin-top:2px}
+.pp-trust{margin-left:auto;text-align:center}
+.pp-trust .ring{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--em) 346deg,rgba(255,255,255,.08) 0)}
+.pp-trust .ring i{width:44px;height:44px;border-radius:50%;background:#0c1119;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:15px;font-style:normal}
+.pp-trust .tl{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;margin-top:5px}
+.pp-badges{display:flex;flex-wrap:wrap;gap:7px;margin:20px 0 18px}
+.vb{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#cfe9e0;background:rgba(52,227,210,.1);border:1px solid rgba(52,227,210,.28);border-radius:999px;padding:5px 11px}
+.vb .c{color:var(--em)}
+.pp-foot{display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--t3);border-top:1px solid rgba(255,255,255,.08);padding-top:14px}
+.pp-foot .own{color:var(--em)}
+.hero-note{text-align:center;font-family:var(--mono);font-size:12px;color:var(--t3);margin-top:18px}
+
+/* sections */
+section{padding:72px 0;border-top:1px solid var(--line)}
+.ey{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);margin-bottom:14px}
+.h2{font-size:clamp(26px,3.6vw,38px);max-width:22ch;margin-bottom:14px}
+.lead{font-size:18px;color:var(--t2);max-width:58ch}
+.lead b{color:var(--ink)}
+
+/* verified rows */
+.vrows{margin-top:30px;display:grid;gap:10px}
+.vrow{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;cursor:pointer;transition:.16s}
+.vrow:hover{border-color:rgba(52,227,210,.4);background:#0f1626}
+.vrow .vc{width:34px;height:34px;border-radius:10px;background:rgba(52,227,210,.12);color:var(--em);display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 auto}
+.vrow .vx{flex:1;min-width:0}
+.vrow .vt{font-weight:700;color:var(--ink);font-size:15px}
+.vrow .vp{font-family:var(--mono);font-size:11.5px;color:var(--t3);margin-top:2px;display:none}
+.vrow.open .vp{display:block}
+.vrow .vstat{font-family:var(--mono);font-size:11px;color:var(--em);background:rgba(52,227,210,.1);border:1px solid rgba(52,227,210,.25);border-radius:999px;padding:4px 10px;white-space:nowrap}
+
+/* two-sided agent */
+.agent{display:grid;grid-template-columns:1fr 64px 1fr;gap:0;margin-top:30px;align-items:stretch}
+@media(max-width:760px){.agent{grid-template-columns:1fr;gap:14px}.agent .mid{display:none}}
+.aside{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+.aside h4{margin:0 0 4px;font-size:15px;color:var(--ink);font-weight:800}
+.aside .who2{font-family:var(--mono);font-size:11px;color:var(--t3);margin-bottom:14px}
+.aside .act2{display:flex;gap:10px;padding:9px 0;font-size:13.5px;color:var(--t2);border-top:1px solid var(--line);line-height:1.4}
+.aside .act2:first-of-type{border-top:0}
+.aside .act2 .d{width:7px;height:7px;border-radius:50%;background:var(--em);margin-top:6px;flex:0 0 auto}
+.mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.mid .orb{width:48px;height:48px;border-radius:50%;background:var(--holo);box-shadow:0 0 30px -4px var(--violet);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.12);opacity:.85}}
+.mid .ml{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);text-align:center;line-height:1.4}
+
+/* access */
+.acc{margin-top:28px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:8px 20px 14px}
+.acc .arow{display:flex;align-items:center;gap:14px;padding:16px 0;border-top:1px solid var(--line)}
+.acc .arow:first-child{border-top:0}
+.acc .av2{width:38px;height:38px;border-radius:11px;background:#172033;color:var(--blue);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.acc .ab{flex:1;min-width:0}.acc .an{font-weight:600;color:var(--ink);font-size:14.5px}.acc .as{font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:1px}
+.tog{width:50px;height:29px;border-radius:999px;background:#222a3b;position:relative;cursor:pointer;transition:.2s;flex:0 0 auto}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:23px;height:23px;border-radius:50%;background:#fff;transition:.2s}
+.tog.on{background:var(--em)}.tog.on::after{left:24px}
+.acc-note{font-family:var(--mono);font-size:11.5px;color:var(--t3);margin-top:6px;text-align:center}
+
+/* inversion / close */
+.flip{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px}
+@media(max-width:680px){.flip{grid-template-columns:1fr}}
+.fcard{border-radius:16px;padding:22px}
+.fcard.old{background:#0e1118;border:1px solid var(--line)}
+.fcard.new{background:linear-gradient(160deg,rgba(52,227,210,.08),rgba(92,200,255,.05));border:1px solid rgba(52,227,210,.3)}
+.fcard .ft{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.fcard.old .ft{color:var(--t3)}.fcard.new .ft{color:var(--em)}
+.fcard ul{margin:0;padding:0;list-style:none}
+.fcard li{font-size:14px;padding:7px 0 7px 22px;position:relative;color:var(--t2)}
+.fcard li::before{position:absolute;left:0;top:7px;font-family:var(--mono)}
+.fcard.old li{color:var(--t3)}.fcard.old li::before{content:"✕";color:#7a6a78}
+.fcard.new li::before{content:"→";color:var(--em)}.fcard.new li{color:var(--ink)}
+.punch{font-size:clamp(20px,3vw,28px);font-weight:800;color:var(--ink);letter-spacing:-.025em;max-width:24ch;margin-top:36px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{font-size:15px;font-weight:700;padding:13px 24px;border-radius:13px;cursor:pointer;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink)}
+.btn.p{background:var(--holo);color:#08101a;border:0}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:#0e1626;border:1px solid var(--line);color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;opacity:0;transition:.3s;z-index:40}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}.toast b{color:var(--em)}
+</style>
+</head>
+<body>
+<a class="exit" href="staffing-os.html">‹ Staffing OS</a>
+
+<header class="hero"><div class="wrap">
+  <span class="kick">◆ a new layer in staffing</span>
+  <h1>Own your talent. <span class="holo-t">Verified once.</span> Trusted everywhere.</h1>
+  <p>Not an ATS. Not a job board. The <b>Talent Passport</b> is a candidate-owned, verified identity that an AI agent runs on your behalf — and that firms access only with your permission. <b>The candidate becomes the system.</b></p>
+  <div class="stage">
+    <div class="passport" id="pp"><div class="inner"><div class="sheen" id="sheen"></div>
+      <div class="pp-top"><span class="lbl">Talent Passport</span><span class="gai"><span class="g">g</span>.AI</span><span class="chip"></span></div>
+      <div class="pp-id"><div class="pp-av">DW</div><div><div class="pp-name">Dana Whitfield</div><div class="pp-role">Senior Platform Engineer · verified</div></div>
+        <div class="pp-trust"><div class="ring"><i>96</i></div><div class="tl">Trust</div></div></div>
+      <div class="pp-badges">
+        <span class="vb"><span class="c">✓</span> Skills</span><span class="vb"><span class="c">✓</span> Work history</span><span class="vb"><span class="c">✓</span> Availability · live</span><span class="vb"><span class="c">✓</span> Comp</span><span class="vb"><span class="c">✓</span> References</span></div>
+      <div class="pp-foot"><span>ID · TP-7F4C-DANA</span><span class="own">● Owned by Dana</span></div>
+    </div></div>
+  </div>
+  <div class="hero-note">move your cursor over the passport ✦ it's hers, not a vendor's</div>
+</div></header>
+
+<section><div class="wrap">
+  <div class="ey">Layer 1 · verification</div>
+  <h2 class="h2">A “92 match” that actually <span class="holo-t">means something.</span></h2>
+  <p class="lead">Every claim on the Passport is <b>verified once, at the source</b> — so it's trusted everywhere, by every firm, forever. Tap any line to see its proof.</p>
+  <div class="vrows" id="vrows">
+    <div class="vrow" onclick="this.classList.toggle('open')"><div class="vc">✓</div><div class="vx"><div class="vt">Skills — AWS · Kubernetes · Terraform · Python</div><div class="vp">Verified by a work-sample challenge + peer endorsement · re-checked Mar 2026</div></div><span class="vstat">verified</span></div>
+    <div class="vrow" onclick="this.classList.toggle('open')"><div class="vc">✓</div><div class="vx"><div class="vt">Work history — 6 yrs platform & infra</div><div class="vp">Employer-confirmed via secure handshake · no résumé inflation possible</div></div><span class="vstat">verified</span></div>
+    <div class="vrow" onclick="this.classList.toggle('open')"><div class="vc">✓</div><div class="vx"><div class="vt">Availability — open, ~4 weeks</div><div class="vp">Self-confirmed by Dana today · auto-expires &amp; re-asks every 30 days</div></div><span class="vstat">live</span></div>
+    <div class="vrow" onclick="this.classList.toggle('open')"><div class="vc">✓</div><div class="vx"><div class="vt">Comp — ~$165k target</div><div class="vp">Benchmarked to verified market data for her role + region</div></div><span class="vstat">verified</span></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="ey">Layer 2 · the agent</div>
+  <h2 class="h2">One agent. <span class="holo-t">Both sides.</span> Always working.</h2>
+  <p class="lead">The Passport isn't a static profile — it's run by an agent that represents the candidate <b>and</b> does the firm's busywork. The humans just decide.</p>
+  <div class="agent">
+    <div class="aside"><h4>For Dana</h4><div class="who2">her agent, working for her</div>
+      <div class="act2"><span class="d"></span>Surfaces roles that fit — only shares her Passport when she says yes</div>
+      <div class="act2"><span class="d"></span>Negotiates comp inside her stated range</div>
+      <div class="act2"><span class="d"></span>Schedules interviews around her calendar</div>
+      <div class="act2"><span class="d"></span>Chases feedback so she's never ghosted</div></div>
+    <div class="mid"><div class="orb"></div><div class="ml">one<br>agent</div></div>
+    <div class="aside"><h4>For the firm</h4><div class="who2">same agent, working the desk</div>
+      <div class="act2"><span class="d"></span>Builds the submittal package — verified, instant</div>
+      <div class="act2"><span class="d"></span>Keeps every record true — zero data entry</div>
+      <div class="act2"><span class="d"></span>Flags the moment a candidate becomes available</div>
+      <div class="act2"><span class="d"></span>Ties every action to pipeline &amp; GP</div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="ey">Layer 3 · ownership</div>
+  <h2 class="h2">Dana holds the keys. Firms <span class="holo-t">subscribe with consent.</span></h2>
+  <p class="lead">Firms don't <b>own</b> Dana's data — they get permissioned, always-fresh access she grants and revokes. Flip a toggle.</p>
+  <div class="acc" id="acc">
+    <div class="arow"><div class="av2">TC</div><div class="ab"><div class="an">TalentCo · Sam</div><div class="as">Platform & Infra roles · granted</div></div><div class="tog on" onclick="tog(this,'TalentCo')"></div></div>
+    <div class="arow"><div class="av2">AR</div><div class="ab"><div class="an">Acme Robotics</div><div class="as">this role only · granted for the process</div></div><div class="tog on" onclick="tog(this,'Acme')"></div></div>
+    <div class="arow"><div class="av2">HX</div><div class="ab"><div class="an">Hooli Staffing</div><div class="as">requesting access</div></div><div class="tog" onclick="tog(this,'Hooli')"></div></div>
+  </div>
+  <div class="acc-note">revoke anytime · the data leaves with her · GDPR/consent by design</div>
+</div></section>
+
+<section style="text-align:center"><div class="wrap">
+  <div class="ey" style="display:inline-block">why this is a category, not a feature</div>
+  <div class="flip" style="text-align:left">
+    <div class="fcard old"><div class="ft">Today · the ATS world</div><ul><li>Vendors own the data</li><li>Data rots in 40 silos</li><li>Candidates are rows, and ghosted</li><li>“92 match” means nothing</li><li>Recruiters re-key everything</li></ul></div>
+    <div class="fcard new"><div class="ft">Staffing OS · the Passport world</div><ul><li>The candidate owns the data</li><li>One verified, living source of truth</li><li>Candidates are owners, never ghosted</li><li>Every claim is verified at the source</li><li>The agent does the busywork, both sides</li></ul></div>
+  </div>
+  <div class="punch" style="margin-left:auto;margin-right:auto;text-align:center">Bullhorn and LinkedIn <b>can't</b> build this — their whole business is <span class="holo-t">owning the data.</span></div>
+  <div class="cta" style="justify-content:center">
+    <button class="btn p" onclick="toast('✓ This is the wedge — verified, owned, agent-run talent.')">This is the product</button>
+    <a class="btn" href="staffing-os-demo.html">See the firm side →</a>
+  </div>
+</div></section>
+
+<div class="toast" id="toast"></div>
+<script>
+/* passport tilt + sheen */
+var pp=document.getElementById('pp'),sheen=document.getElementById('sheen');
+document.querySelector('.stage').addEventListener('mousemove',function(e){
+  var r=pp.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+  pp.style.transform='rotateY('+(x*16)+'deg) rotateX('+(-y*16)+'deg)';
+  sheen.style.transform='translateX('+(x*120)+'%)';
+});
+document.querySelector('.stage').addEventListener('mouseleave',function(){pp.style.transform='';sheen.style.transform='translateX(-30%)';});
+var T;function toast(m){var e=document.getElementById('toast');e.innerHTML=m.replace('✓','<b>✓</b>');e.classList.add('on');clearTimeout(T);T=setTimeout(function(){e.classList.remove('on');},2600);}
+function tog(el,name){el.classList.toggle('on');toast(el.classList.contains('on')?('✓ Access granted to '+name):('Access revoked from '+name));}
+</script>
+</body>
+</html>
