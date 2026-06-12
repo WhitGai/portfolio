@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Munch Quest</title>
+<meta name="theme-color" content="#0a0b10">
+<style>
+  :root{
+    --bg:#0a0b10; --bg2:#11131c; --ink:#f3f4f8; --t2:#aab0c2; --t3:#6b7185;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.18);
+    --pink:#ec0b8c; --volt:#c8ff2e; --cyan:#27e7d4; --gold:#ffd23f;
+    --red:#ff5a6e; --orange:#ff9f43; --yellow:#ffd23f; --green:#52e08a;
+    --blue:#4aa8ff; --purple:#b07bff; --white:#e7ecf5;
+    --sh:0 16px 50px rgba(0,0,0,.5);
+    --r:18px; --font:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(1100px 600px at 85% -10%,rgba(236,11,140,.18),transparent 60%),
+      radial-gradient(900px 600px at -10% 110%,rgba(39,231,212,.14),transparent 60%),
+      var(--bg);
+    color:var(--ink); font-family:var(--font); min-height:100vh;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:18px 16px 120px}
+  .glass{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+    border:1px solid var(--line);border-radius:var(--r);backdrop-filter:blur(8px)}
+  button{font-family:inherit;cursor:pointer;border:none;color:inherit}
+  h1,h2,h3{margin:0;letter-spacing:-.02em}
+  .mono{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+
+  /* ---------- top brand ---------- */
+  .brand{display:flex;align-items:center;gap:10px;justify-content:center;margin:6px 0 16px}
+  .brand .logo{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--pink),#ff5ea8);box-shadow:0 8px 24px rgba(236,11,140,.45);font-size:18px}
+  .brand b{font-size:20px;font-weight:800;letter-spacing:-.03em}
+  .brand span{color:var(--t3);font-size:12px}
+
+  /* ---------- profile picker ---------- */
+  .pick h2{font-size:22px;text-align:center;margin-bottom:4px}
+  .pick p{color:var(--t2);text-align:center;margin:0 0 22px;font-size:14px}
+  .players{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .pcard{padding:22px 16px;border-radius:var(--r);text-align:center;transition:.18s;position:relative;overflow:hidden}
+  .pcard:active{transform:scale(.97)}
+  .pcard .av{font-size:46px;line-height:1}
+  .pcard h3{font-size:20px;margin:10px 0 2px}
+  .pcard .meta{color:var(--t3);font-size:12px}
+  .pcard .lv{display:inline-block;margin-top:10px;font-size:11px;color:var(--volt);
+    border:1px solid rgba(200,255,46,.3);border-radius:999px;padding:3px 9px}
+  .pcard.add{display:grid;place-items:center;color:var(--t3);border-style:dashed}
+  .pcard.add .av{font-size:34px;opacity:.7}
+
+  /* ---------- HUD ---------- */
+  .hud{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:14px}
+  .hud .av{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:26px;
+    background:rgba(255,255,255,.06);border:1px solid var(--line2);flex:0 0 auto}
+  .hud .who{flex:1;min-width:0}
+  .hud .who .nm{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .hud .who .tt{color:var(--volt);font-size:12px;font-weight:600}
+  .bar{height:7px;border-radius:999px;background:rgba(255,255,255,.08);margin-top:7px;overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--volt),var(--cyan));
+    border-radius:999px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+  .hud .pts{text-align:right;flex:0 0 auto}
+  .hud .pts .n{font-size:22px;font-weight:800;font-family:ui-monospace,monospace;line-height:1}
+  .hud .pts .l{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em}
+  .streak{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--orange);
+    background:rgba(255,159,67,.12);border:1px solid rgba(255,159,67,.3);border-radius:999px;padding:2px 8px}
+  .swap{background:none;color:var(--t3);font-size:12px;text-decoration:underline;padding:4px}
+
+  /* ---------- tabs ---------- */
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+  .tab{padding:11px 4px;border-radius:13px;font-size:13px;font-weight:600;color:var(--t2);
+    background:rgba(255,255,255,.04);border:1px solid var(--line);transition:.15s;text-align:center}
+  .tab .ic{font-size:18px;display:block;margin-bottom:2px}
+  .tab.on{color:var(--ink);background:linear-gradient(180deg,rgba(236,11,140,.22),rgba(236,11,140,.08));
+    border-color:rgba(236,11,140,.5)}
+  .tab:active{transform:scale(.96)}
+
+  .panel{display:none;animation:fade .25s ease}
+  .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:2px 2px 12px}
+  .sec-h h3{font-size:17px}
+  .sec-h .hint{color:var(--t3);font-size:12px}
+
+  /* ---------- food chips / grids ---------- */
+  .palette{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:9px}
+  .fchip{position:relative;padding:12px 4px 9px;border-radius:14px;text-align:center;
+    background:rgba(255,255,255,.04);border:1px solid var(--line);transition:.14s}
+  .fchip:active{transform:scale(.93)}
+  .fchip .em{font-size:30px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+  .fchip .nm{font-size:11px;color:var(--t2);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fchip .dot{position:absolute;top:7px;right:7px;width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(0,0,0,.3)}
+  .fchip.sel{border-color:var(--volt);background:rgba(200,255,46,.12);box-shadow:0 0 0 1px var(--volt) inset}
+  .fchip .crown{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:14px}
+  .fchip .rung{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font-size:9px;
+    color:var(--cyan);font-family:ui-monospace,monospace}
+  .fchip.done{opacity:.92}
+  .fchip.done .em{filter:drop-shadow(0 0 10px rgba(255,210,63,.55))}
+
+  /* color dots */
+  .c-red{background:var(--red)} .c-orange{background:var(--orange)} .c-yellow{background:var(--yellow)}
+  .c-green{background:var(--green)} .c-blue{background:var(--blue)} .c-purple{background:var(--purple)}
+  .c-white{background:var(--white)}
+
+  /* ---------- plate ---------- */
+  .plate-zone{padding:16px;margin-bottom:14px;text-align:center}
+  .plate{width:200px;height:200px;border-radius:50%;margin:6px auto 10px;position:relative;
+    background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.10),rgba(255,255,255,.02));
+    border:2px dashed var(--line2);display:grid;place-items:center}
+  .plate.full{border-style:solid;border-color:rgba(200,255,46,.5)}
+  .plate .ph{color:var(--t3);font-size:13px;max-width:130px}
+  .plate .items{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-content:center;
+    justify-content:center;gap:2px;padding:26px}
+  .plate .items span{font-size:26px}
+  .meters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+  .meter{font-size:11px;color:var(--t2);background:rgba(255,255,255,.05);border:1px solid var(--line);
+    border-radius:999px;padding:4px 10px}
+  .meter b{color:var(--ink)} .meter.good{color:var(--green);border-color:rgba(82,224,138,.4)}
+  .cta{display:block;width:100%;padding:15px;border-radius:15px;font-size:16px;font-weight:800;
+    background:linear-gradient(135deg,var(--pink),#ff5ea8);color:#fff;box-shadow:0 10px 30px rgba(236,11,140,.4);transition:.15s}
+  .cta:active{transform:scale(.98)} .cta:disabled{filter:grayscale(.7) brightness(.7);box-shadow:none}
+  .cta.ghost{background:rgba(255,255,255,.06);color:var(--t2);box-shadow:none;border:1px solid var(--line);font-weight:600;font-size:14px;padding:12px}
+
+  /* ---------- badges ---------- */
+  .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+  .badge{padding:16px 8px;border-radius:15px;text-align:center;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+  .badge .em{font-size:32px;filter:grayscale(1) opacity(.35)}
+  .badge .nm{font-size:11px;color:var(--t3);margin-top:7px;line-height:1.3}
+  .badge.got{background:linear-gradient(180deg,rgba(255,210,63,.14),rgba(255,210,63,.04));border-color:rgba(255,210,63,.4)}
+  .badge.got .em{filter:none}
+  .badge.got .nm{color:var(--ink)}
+
+  /* ---------- catalog ---------- */
+  .empty{text-align:center;color:var(--t3);padding:40px 20px;font-size:14px}
+  .empty .big{font-size:40px;display:block;margin-bottom:10px;opacity:.6}
+
+  /* ---------- modal ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(5,6,10,.7);backdrop-filter:blur(4px);
+    display:none;align-items:flex-end;justify-content:center;z-index:40;padding:14px}
+  .scrim.on{display:flex}
+  .sheet{width:100%;max-width:440px;border-radius:22px;padding:22px 20px 24px;
+    background:var(--bg2);border:1px solid var(--line2);box-shadow:var(--sh);animation:rise .28s cubic-bezier(.2,.8,.2,1)}
+  @keyframes rise{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+  .sheet .top{text-align:center;margin-bottom:18px}
+  .sheet .em{font-size:58px;line-height:1;filter:drop-shadow(0 8px 18px rgba(0,0,0,.5))}
+  .sheet h3{font-size:22px;margin-top:8px}
+  .sheet .sub{color:var(--t2);font-size:13px;margin-top:3px}
+  .ladder{display:flex;flex-direction:column-reverse;gap:8px;margin:6px 0 18px}
+  .rungrow{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:13px;
+    background:rgba(255,255,255,.03);border:1px solid var(--line);transition:.2s}
+  .rungrow .rn{font-size:22px;width:30px;text-align:center}
+  .rungrow .rl{flex:1;font-weight:600;font-size:15px;text-transform:capitalize}
+  .rungrow .rx{font-size:12px;color:var(--t3)}
+  .rungrow.done{background:rgba(82,224,138,.10);border-color:rgba(82,224,138,.35)}
+  .rungrow.done .rx{color:var(--green)}
+  .rungrow.cur{border-color:var(--volt);background:rgba(200,255,46,.10);box-shadow:0 0 0 1px var(--volt) inset}
+  .rungrow.cur .rx{color:var(--volt)}
+  .sheet .x{position:absolute}
+  .closeb{display:block;width:100%;text-align:center;color:var(--t3);font-size:13px;margin-top:12px;background:none;padding:8px}
+
+  /* ---------- toast + confetti ---------- */
+  .toast{position:fixed;left:50%;top:18%;transform:transl(-50%,-10px);z-index:60;
+    background:var(--bg2);border:1px solid var(--volt);border-radius:14px;padding:12px 18px;
+    box-shadow:var(--sh);font-weight:700;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  .toast .s{display:block;font-size:12px;color:var(--t2);font-weight:500;margin-top:2px}
+  canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:55}
+  .foot{text-align:center;color:var(--t3);font-size:11px;margin-top:26px;line-height:1.6}
+  .foot a{color:var(--t2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <span class="logo">🍴</span>
+    <div><b>Munch&nbsp;Quest</b> <span class="mono">&nbsp;v1</span></div>
+  </div>
+
+  <!-- PROFILE PICKER -->
+  <section id="pick" class="pick glass" style="padding:24px 18px;display:none">
+    <h2>Who's playing?</h2>
+    <p>Pick your hero. Your quest saves on this device — no login, ever.</p>
+    <div id="players" class="players"></div>
+  </section>
+
+  <!-- GAME -->
+  <section id="game" style="display:none">
+    <div class="hud glass">
+      <div class="av" id="hudAv">🦊</div>
+      <div class="who">
+        <div class="nm"><span id="hudName">Leo</span> <span class="streak" id="hudStreak">🔥 0</span></div>
+        <div class="tt" id="hudTitle">Rookie Taster</div>
+        <div class="bar"><i id="hudBar" style="width:0%"></i></div>
+      </div>
+      <div class="pts">
+        <div class="n" id="hudPts">0</div>
+        <div class="l">points</div>
+      </div>
+    </div>
+    <div style="text-align:right;margin:-8px 2px 12px"><button class="swap" onclick="MQ.logout()">switch player</button></div>
+
+    <div class="tabs">
+      <button class="tab on" data-tab="plate"><span class="ic">🍽️</span>Plate</button>
+      <button class="tab" data-tab="ladder"><span class="ic">🪜</span>Brave Bites</button>
+      <button class="tab" data-tab="badges"><span class="ic">🏅</span>Badges</button>
+      <button class="tab" data-tab="catalog"><span class="ic">📒</span>Catalog</button>
+    </div>
+
+    <!-- PLATE -->
+    <div class="panel on" id="p-plate">
+      <div class="plate-zone glass">
+        <div class="plate" id="plate"><div class="ph" id="platePh">Tap foods below to build a balanced rainbow plate</div>
+          <div class="items" id="plateItems"></div></div>
+        <div class="meters" id="plateMeters"></div>
+        <button class="cta" id="plateBtn" disabled onclick="MQ.lockPlate()">Build a balanced plate to lock it in</button>
+      </div>
+      <div class="sec-h"><h3>Food palette</h3><span class="hint">eat the rainbow 🌈</span></div>
+      <div class="palette" id="palette"></div>
+    </div>
+
+    <!-- LADDER -->
+    <div class="panel" id="p-ladder">
+      <div class="sec-h"><h3>Climb the tasting ladder</h3><span class="hint">look → smell → lick → taste</span></div>
+      <p style="color:var(--t2);font-size:13px;margin:0 0 14px">One brave rung at a time. Tap a food, pick the bravest thing you did today. Reach the top and you've unlocked it for good. 👑</p>
+      <div class="palette" id="ladderGrid"></div>
+    </div>
+
+    <!-- BADGES -->
+    <div class="panel" id="p-badges">
+      <div class="sec-h"><h3>Badge case</h3><span class="hint" id="badgeCount">0 / 8</span></div>
+      <div class="badges" id="badges"></div>
+    </div>
+
+    <!-- CATALOG -->
+    <div class="panel" id="p-catalog">
+      <div class="sec-h"><h3>Foods I've unlocked</h3><span class="hint" id="catCount">0 foods</span></div>
+      <div id="catalog"></div>
+    </div>
+
+    <div class="foot">
+      Built for two brave eaters. The fun lives up here; the scoring lives in a tested engine.<br>
+      <a href="munch-quest/README.md">Architecture</a> · <a href="munch-quest/engine.test.js">99 passing tests</a>
+    </div>
+  </section>
+</div>
+
+<!-- food sheet -->
+<div class="scrim" id="scrim" onclick="if(event.target===this)MQ.closeSheet()">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<canvas id="fx"></canvas>
+
+<script src="munch-quest/engine.js"></script>
+<script>
+/* If engine.js can't load (e.g. opened as a bare file://), fall back so the
+   page still works. When served from the repo it loads the real module. */
+(function(){ if(typeof MunchEngine==='undefined'){
+  var s=document.createElement('script'); s.src='engine.js';
+  s.onload=boot; s.onerror=function(){document.body.innerHTML='<p style="color:#fff;padding:40px;text-align:center">Run this from the project folder so engine.js loads.</p>';};
+  document.head.appendChild(s);
+} else { document.addEventListener('DOMContentLoaded',boot); }
+})();
+
+var E, STORE='munchquest.v1', DB, current=null, plate=[];
+
+var MQ = {
+  pick:function(id){ current=id; DB.lastPlayer=id; save(); showGame(); },
+  logout:function(){ current=null; DB.lastPlayer=null; save(); showPick(); },
+  tab:function(name){
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.dataset.tab===name);});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+name);});
+  },
+  togglePlate:function(id){
+    var i=plate.indexOf(id);
+    if(i>=0) plate.splice(i,1); else if(plate.length<8) plate.push(id);
+    renderPlate();
+  },
+  lockPlate:function(){
+    if(!E.isBalancedPlate(plate)) return;
+    var r=E.buildPlate(state(),plate,E.dayNumber());
+    setState(r.state); plate=[]; renderPlate(); renderAll();
+    confetti(); toast('🌈 Balanced plate! +'+r.earned, 'You ate the rainbow.');
+    celebrateBadges(r.newBadges);
+  },
+  openFood:function(id){ openSheet(id); },
+  brave:function(id){
+    var r=E.advanceLadder(state(),id,E.dayNumber());
+    setState(r.state);
+    if(r.conquered){ confetti(); toast('👑 You unlocked '+E.getFood(id).name+'! +'+r.earned,'Top of the ladder — that took guts.'); }
+    else { toast('💪 '+cap(r.rungName)+'! +'+r.earned, niceFor(r.rungName)); spark(); }
+    celebrateBadges(r.newBadges);
+    renderAll(); openSheet(id);
+  },
+  closeSheet:function(){ document.getElementById('scrim').classList.remove('on'); }
+};
+
+/* ---------- data ---------- */
+function load(){ try{ DB=JSON.parse(localStorage.getItem(STORE)); }catch(e){}
+  if(!DB||!DB.players){ DB={ players:{
+      leo:{ av:'🦊', profile:E.newProfile('Leo',6) },
+      max:{ av:'🐉', profile:E.newProfile('Max',9) }
+    }, lastPlayer:null }; save(); } }
+function save(){ try{ localStorage.setItem(STORE,JSON.stringify(DB)); }catch(e){} }
+function state(){ return DB.players[current].profile; }
+function setState(s){ DB.players[current].profile=s; save(); }
+
+/* ---------- screens ---------- */
+function boot(){ E=MunchEngine; load(); bindTabs();
+  if(DB.lastPlayer && DB.players[DB.lastPlayer]){ current=DB.lastPlayer; showGame(); } else showPick(); }
+function bindTabs(){ document.querySelectorAll('.tab').forEach(function(t){ t.onclick=function(){MQ.tab(t.dataset.tab);}; }); }
+
+function showPick(){
+  document.getElementById('game').style.display='none';
+  var pk=document.getElementById('pick'); pk.style.display='block';
+  var box=document.getElementById('players'); box.innerHTML='';
+  Object.keys(DB.players).forEach(function(id){
+    var p=DB.players[id], lv=E.levelFor(p.profile.points);
+    var el=document.createElement('button'); el.className='pcard glass';
+    el.innerHTML='<div class="av">'+p.av+'</div><h3>'+p.profile.name+'</h3>'+
+      '<div class="meta">age '+(p.profile.age||'?')+'</div><div class="lv">Lv '+lv.level+' · '+lv.title+'</div>';
+    el.onclick=function(){ MQ.pick(id); }; box.appendChild(el);
+  });
+}
+
+function showGame(){
+  document.getElementById('pick').style.display='none';
+  document.getElementById('game').style.display='block';
+  plate=[]; MQ.tab('plate'); renderAll(); renderPlate();
+}
+
+/* ---------- render ---------- */
+function renderAll(){ renderHUD(); renderPalette(); renderLadder(); renderBadges(); renderCatalog(); }
+
+function renderHUD(){
+  var s=state(), p=DB.players[current], lv=E.levelFor(s.points);
+  document.getElementById('hudAv').textContent=p.av;
+  document.getElementById('hudName').textContent=s.name;
+  document.getElementById('hudTitle').textContent='Lv '+lv.level+' · '+lv.title;
+  document.getElementById('hudPts').textContent=s.points;
+  document.getElementById('hudStreak').textContent='🔥 '+(s.streak||0);
+  var pct = lv.isMax?100:Math.round((lv.intoLevel/(lv.next-lv.floor))*100);
+  document.getElementById('hudBar').style.width=Math.max(4,pct)+'%';
+}
+
+function fchip(f, opts){
+  opts=opts||{};
+  var s=state(), rung=s.ladders[f.id]||0, done=rung>=E.LADDER_MAX;
+  var cls='fchip'+(opts.sel?' sel':'')+(done?' done':'');
+  var crown=done?'<span class="crown">👑</span>':'';
+  var rungTag = (rung>0&&!done)?'<span class="rung">'+E.ladderName(rung)+'</span>':'';
+  return '<button class="'+cls+'" onclick="'+opts.on+'">'+crown+
+    '<span class="dot c-'+f.color+'"></span><div class="em">'+f.emoji+'</div>'+
+    '<div class="nm">'+f.name+'</div>'+rungTag+'</button>';
+}
+
+function renderPalette(){
+  document.getElementById('palette').innerHTML = E.FOODS.map(function(f){
+    return fchip(f,{sel:plate.indexOf(f.id)>=0, on:"MQ.togglePlate('"+f.id+"')"});
+  }).join('');
+}
+
+function renderPlate(){
+  renderPalette();
+  var items=document.getElementById('plateItems');
+  items.innerHTML = plate.map(function(id){ return '<span>'+E.getFood(id).emoji+'</span>'; }).join('');
+  document.getElementById('platePh').style.display = plate.length?'none':'block';
+  var r=E.scorePlate(plate), pl=document.getElementById('plate');
+  pl.classList.toggle('full', r.balanced);
+  var groups=E.plateGroups(plate);
+  function mk(label,have){ return '<span class="meter'+(have?' good':'')+'">'+(have?'✓':'•')+' '+label+'</span>'; }
+  document.getElementById('plateMeters').innerHTML =
+    mk('Veggie',groups.indexOf('veg')>=0)+mk('Fruit',groups.indexOf('fruit')>=0)+
+    mk('Protein',groups.indexOf('protein')>=0)+
+    '<span class="meter'+(r.colors>=E.MIN_COLORS?' good':'')+'">🌈 '+r.colors+'/'+E.MIN_COLORS+' colors</span>';
+  var btn=document.getElementById('plateBtn');
+  btn.disabled=!r.balanced;
+  btn.textContent = r.balanced ? ('Lock it in  ·  +'+r.points+' pts') : 'Balanced plate needs veg + fruit + protein + 3 colors';
+}
+
+function renderLadder(){
+  document.getElementById('ladderGrid').innerHTML = E.FOODS.map(function(f){
+    return fchip(f,{on:"MQ.openFood('"+f.id+"')"});
+  }).join('');
+}
+
+function renderBadges(){
+  var s=state(), got=E.earnedBadges(s);
+  document.getElementById('badgeCount').textContent=got.length+' / '+E.BADGES.length;
+  document.getElementById('badges').innerHTML = E.BADGES.map(function(b){
+    var has=got.indexOf(b.id)>=0;
+    return '<div class="badge'+(has?' got':'')+'"><div class="em">'+b.emoji+'</div><div class="nm">'+b.name+'</div></div>';
+  }).join('');
+}
+
+function renderCatalog(){
+  var s=state(), c=s.conquered||[];
+  document.getElementById('catCount').textContent=c.length+(c.length===1?' food':' foods');
+  var box=document.getElementById('catalog');
+  if(!c.length){ box.innerHTML='<div class="empty glass"><span class="big">📒</span>No foods unlocked yet. Climb a ladder to the top and your conquered foods land here.</div>'; return; }
+  box.className='palette';
+  box.innerHTML = c.map(function(id){ var f=E.getFood(id);
+    return '<div class="fchip done"><span class="crown">👑</span><span class="dot c-'+f.color+'"></span><div class="em">'+f.emoji+'</div><div class="nm">'+f.name+'</div></div>';
+  }).join('');
+}
+
+/* ---------- food sheet ---------- */
+function openSheet(id){
+  var f=E.getFood(id), s=state(), rung=s.ladders[id]||0, done=rung>=E.LADDER_MAX;
+  var blurbs={look:'Just look at it on the plate.',smell:'Give it a sniff.',lick:'One little lick.',taste:'A real brave bite!'};
+  var rows=E.LADDER.map(function(name,i){
+    var lvl=i+1, st = lvl<=rung?'done':(lvl===rung+1?'cur':'');
+    var mark = lvl<=rung?'✓ done':(lvl===rung+1?'you\'re here':'');
+    return '<div class="rungrow '+st+'"><div class="rn">'+['👀','👃','👅','😋'][i]+'</div>'+
+      '<div class="rl">'+name+'<div style="font-weight:400;font-size:12px;color:var(--t3)">'+blurbs[name]+'</div></div>'+
+      '<div class="rx">'+mark+'</div></div>';
+  }).join('');
+  var btn = done
+    ? '<div class="cta" style="background:rgba(255,210,63,.16);color:var(--gold);box-shadow:none">👑 Unlocked — you taste this now!</div>'
+    : '<button class="cta" onclick="MQ.brave(\''+id+'\')">I did the '+E.ladderName(rung+1)+'! 💪</button>';
+  document.getElementById('sheet').innerHTML =
+    '<div class="top"><div class="em">'+f.emoji+'</div><h3>'+f.name+'</h3>'+
+    '<div class="sub">'+(done?'Conquered!':'Next brave step: '+E.ladderName(rung+1))+'</div></div>'+
+    '<div class="ladder">'+rows+'</div>'+btn+
+    '<button class="closeb" onclick="MQ.closeSheet()">close</button>';
+  document.getElementById('scrim').classList.add('on');
+}
+
+/* ---------- celebrate ---------- */
+function toast(msg,sub){
+  var t=document.getElementById('toast');
+  t.innerHTML=msg+(sub?'<span class="s">'+sub+'</span>':'');
+  t.classList.add('on'); beep(); clearTimeout(t._h);
+  t._h=setTimeout(function(){t.classList.remove('on');},2200);
+}
+function celebrateBadges(list){ if(!list||!list.length) return;
+  list.forEach(function(id,i){ setTimeout(function(){ var b=findBadge(id);
+    toast('🏅 New badge: '+b.name, 'Added to your case'); }, 700*(i+1)); });
+}
+function findBadge(id){ for(var i=0;i<E.BADGES.length;i++) if(E.BADGES[i].id===id) return E.BADGES[i]; return {name:id}; }
+function cap(s){ return s? s[0].toUpperCase()+s.slice(1):s; }
+function niceFor(r){ return {look:'Eyes on it — that counts.',smell:'A sniff is real bravery.',lick:'A lick is a big deal!'}[r]||'Nice one.'; }
+
+/* confetti + sound (best-effort, silent if blocked) */
+var fx=document.getElementById('fx'), ctx2=fx.getContext('2d'), parts=[];
+function size(){ fx.width=innerWidth; fx.height=innerHeight; } addEventListener('resize',size); size();
+function confetti(){ var C=['#ec0b8c','#c8ff2e','#27e7d4','#ffd23f','#ff5a6e','#b07bff'];
+  for(var i=0;i<90;i++) parts.push({x:innerWidth/2,y:innerHeight*0.28,
+    vx:(Math.random()-.5)*9,vy:Math.random()*-11-3,g:.35,
+    s:5+Math.random()*6,c:C[i%C.length],r:Math.random()*6,vr:(Math.random()-.5)*.4,life:90});
+  if(!fx._raf) tick(); }
+function spark(){ var C=['#c8ff2e','#27e7d4','#ffd23f'];
+  for(var i=0;i<24;i++) parts.push({x:innerWidth/2,y:innerHeight*0.22,
+    vx:(Math.random()-.5)*7,vy:Math.random()*-7-2,g:.3,s:4+Math.random()*4,c:C[i%3],r:0,vr:.2,life:60});
+  if(!fx._raf) tick(); }
+function tick(){ ctx2.clearRect(0,0,fx.width,fx.height); fx._raf=1;
+  parts=parts.filter(function(p){return p.life>0;});
+  parts.forEach(function(p){ p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; p.life--;
+    ctx2.save(); ctx2.translate(p.x,p.y); ctx2.rotate(p.r); ctx2.fillStyle=p.c;
+    ctx2.globalAlpha=Math.max(0,p.life/90); ctx2.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.4); ctx2.restore(); });
+  if(parts.length) requestAnimationFrame(tick); else { ctx2.clearRect(0,0,fx.width,fx.height); fx._raf=0; } }
+var AC; function beep(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+  var o=AC.createOscillator(),g=AC.createGain(); o.connect(g); g.connect(AC.destination);
+  o.type='triangle'; o.frequency.value=660; g.gain.value=.05;
+  o.start(); o.frequency.exponentialRampToValueAtTime(990,AC.currentTime+.12);
+  g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+.18); o.stop(AC.currentTime+.2);
+}catch(e){} }
+</script>
+</body>
+</html>
